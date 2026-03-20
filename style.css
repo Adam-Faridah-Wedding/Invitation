@@ -8,25 +8,26 @@ body {
     background-color: #f3f4f6; /* Light gray background to highlight the white card */
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start; /* Start from top so it natively scrolls down */
     min-height: 100vh;
     min-height: 100dvh; /* Dynamic height for mobile browsers */
     font-family: 'Montserrat', sans-serif;
-    overflow: hidden;
+    overflow: hidden; /* Locked initially before they press Open */
+    margin: 0;
 }
 
 .card-container {
     background-color: #ffffff;
     width: 100%;
     max-width: 450px; /* Mobile width container */
-    height: 100vh;
-    height: 100dvh; /* Dynamic height for mobile browsers */
+    min-height: 100vh;
+    min-height: 100dvh; /* Dynamic height for mobile browsers */
     position: relative;
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.08); /* Soft drop shadow */
-    overflow: hidden;
+    overflow-x: hidden; /* Only clip horizontal overflows so height can naturally grow */
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
 }
 
 .flower {
@@ -105,7 +106,8 @@ body {
 .cover-section {
     position: absolute;
     width: 100%;
-    height: 100%;
+    height: 100vh;
+    height: 100dvh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -121,22 +123,19 @@ body {
 
 /* --- Inner Invitation Section --- */
 .invitation-section {
-    position: absolute;
     width: 100%;
-    height: 100%;
     opacity: 0;
     pointer-events: none;
     z-index: 10;
-    display: block; /* Flex containers inside absolute divs often swallow bottom padding */
-    overflow-y: auto;
-    overflow-x: hidden;
-    scroll-behavior: smooth;
+    display: none; 
     padding-bottom: 130px; /* Safe cushion for the navigation bar */
 }
 
 .card-container.opened .invitation-section {
+    display: block;
     opacity: 1;
     pointer-events: all;
+    animation: contentFade 1.5s ease forwards;
 }
 
 /* Hero Section */
@@ -262,10 +261,12 @@ body {
 
 /* Bottom Navigation */
 .bottom-nav {
-    position: absolute;
+    position: fixed;
     bottom: 0;
-    left: 0;
+    left: 50%;
+    transform: translateX(-50%);
     width: 100%;
+    max-width: 450px;
     height: 70px;
     height: calc(70px + env(safe-area-inset-bottom)); /* Accounts for iOS home bar */
     padding-bottom: env(safe-area-inset-bottom);
@@ -522,53 +523,7 @@ body {
 .s-flower-4 { bottom:  -5%; right: 17%; width: 50%; transform: rotate(-20deg); }
 .s-flower-5 { bottom: 10%; right: -20%; width: 60%; transform: rotate(-20deg); }
 
-/* Override animation for flowers 1, 2, 3 to scale in from the RIGHT edge */
-.s-flower-1.animate-in, 
-.s-flower-2.animate-in, 
-.s-flower-3.animate-in {
-    animation: fwScaleInRight 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards, flowerSway 4s 1.5s infinite alternate ease-in-out;
-}
 
-/* Flower 4 scale in from BOTTOM with its custom rotation */
-.s-flower-4.animate-in {
-    animation: fwScaleInBottomRotate20 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards, fwSway20 4s 1.5s infinite alternate ease-in-out;
-}
-
-/* Flower 5 scale in from RIGHT with its custom rotation */
-.s-flower-5.animate-in {
-    animation: fwScaleInRightRotateMinus20 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards, fwSwayMinus20 4s 1.5s infinite alternate ease-in-out;
-}
-
-/* Corrected animation delays: The sway animation MUST wait until the first animation finishes (1.5s) */
-.s-flower-1.animate-in { animation-delay: 0.1s, 1.6s; transform-origin: right top;}
-.s-flower-2.animate-in { animation-delay: 0.1s, 1.6s; transform-origin: right center;}
-.s-flower-3.animate-in { animation-delay: 0.3s, 1.8s; transform-origin: right bottom;}
-.s-flower-4.animate-in { animation-delay: 0.4s, 1.9s; transform-origin: right bottom;}
-.s-flower-5.animate-in { animation-delay: 0.5s, 2.0s; transform-origin: center bottom;}
-
-/* Custom animations using legacy 'transform' to ensure 100% phone compatibility */
-@keyframes fwScaleInRight {
-    from { opacity: 0; transform: translateX(80px) scale(0.5); }
-    to { opacity: 1; transform: translateX(0) scale(1); }
-}
-
-@keyframes fwScaleInBottomRotate20 {
-    from { opacity: 0; transform: translateY(80px) scale(0.5) rotate(20deg); }
-    to { opacity: 1; transform: translateY(0) scale(1) rotate(20deg); }
-}
-@keyframes fwSway20 {
-    0% { transform: translateY(0) scale(1) rotate(20deg); }
-    100% { transform: translateY(0) scale(1) rotate(23deg); }
-}
-
-@keyframes fwScaleInRightRotateMinus20 {
-    from { opacity: 0; transform: translateX(80px) scale(0.5) rotate(-20deg); }
-    to { opacity: 1; transform: translateX(0) scale(1) rotate(-20deg); }
-}
-@keyframes fwSwayMinus20 {
-    0% { transform: translateY(0) scale(1) rotate(-20deg); }
-    100% { transform: translateY(0) scale(1) rotate(-17deg); }
-}
 
 /* Countdown Styles */
 .countdown-wrapper {
@@ -619,35 +574,8 @@ body {
     z-index: 5;
     box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     border: 1px solid rgba(255,255,255,0.8);
-    opacity: 0; 
-    transform: translateY(30px);
-}
-.glass-panel.animate-in {
-    animation: contentFade 1.2s ease forwards;
 }
 
-/* Stagger cascade animation for all content inside the main details glass panel */
-.details-section .glass-panel > p,
-.details-section .glass-panel > h2,
-.details-section .glass-panel > div {
-    opacity: 0;
-    transform: translateY(20px);
-}
-
-.details-section .glass-panel.animate-in > p,
-.details-section .glass-panel.animate-in > h2,
-.details-section .glass-panel.animate-in > div {
-    animation: contentFade 0.8s ease forwards;
-}
-
-.details-section .glass-panel.animate-in > p:nth-of-type(1) { animation-delay: 0.30s; }
-.details-section .glass-panel.animate-in > p:nth-of-type(2) { animation-delay: 0.45s; }
-.details-section .glass-panel.animate-in > p:nth-of-type(3) { animation-delay: 0.60s; }
-.details-section .glass-panel.animate-in > p:nth-of-type(4) { animation-delay: 0.75s; }
-.details-section .glass-panel.animate-in > p:nth-of-type(5) { animation-delay: 0.90s; }
-.details-section .glass-panel.animate-in > h2:nth-of-type(1) { animation-delay: 1.05s; }
-.details-section .glass-panel.animate-in > div.event-details { animation-delay: 1.20s; }
-.details-section .glass-panel.animate-in > div.glass-buttons { animation-delay: 1.35s; }
 
 .glass-panel p {
     font-size: 11px;
@@ -760,12 +688,6 @@ body {
     text-align: center;
     text-transform: uppercase;
     font-weight: 600;
-    opacity: 0;
-    transform: translateY(20px);
-}
-.aturcara-header.animate-in {
-    animation: contentFade 0.8s ease forwards;
-    animation-delay: 0.3s;
 }
 
 .aturcara-item {
@@ -773,18 +695,8 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    opacity: 0;
-    transform: translateY(20px);
-}
-.aturcara-item.animate-in {
-    animation: contentFade 0.8s ease forwards;
 }
 
-/* Stagger the delay based on the layout order to create a waterfall drop-in effect */
-.aturcara-item:nth-of-type(1).animate-in { animation-delay: 0.4s; }
-.aturcara-item:nth-of-type(2).animate-in { animation-delay: 0.5s; }
-.aturcara-item:nth-of-type(3).animate-in { animation-delay: 0.6s; }
-.aturcara-item:nth-of-type(4).animate-in { animation-delay: 0.7s; }
 .aturcara-item:last-child {
     margin-bottom: 0;
 }
@@ -811,12 +723,6 @@ body {
     text-align: center;
     margin-top: 10px;
     margin-bottom: 40px;
-    opacity: 0;
-    transform: translateY(20px);
-}
-.doa-section.animate-in {
-    animation: contentFade 1.2s ease forwards;
-    animation-delay: 0.3s; /* Delay it slightly behind the glass panel */
 }
 
 .doa-header {

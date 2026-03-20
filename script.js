@@ -38,6 +38,48 @@ function openInvitation() {
         
         // Trigger the transition to show inner section
         container.classList.add('opened');
+        
+        // Completely unlock native browser root scrolling so AOS reads manual smartphone touch events flawlessly
+        document.body.style.overflow = 'visible';
+
+        // Extremely critical: AOS initialized while the container was display:none, so it set all Y-coordinates to 0.
+        // We must force a hard refresh now that the layout exists so it resets animations to their true bottom coordinates!
+        setTimeout(() => {
+            AOS.refresh();
+        }, 100);
+
+        // Start an elegant auto-scroll shortly after the initial cover fade-in
+        setTimeout(() => {
+            let isAutoScrolling = true;
+            let currentY = window.scrollY;
+
+            // Immediately stop auto-scrolling if the guest touches the screen or scrolls manually
+            const stopScroll = () => { isAutoScrolling = false; };
+            window.addEventListener('touchstart', stopScroll, { once: true, passive: true });
+            window.addEventListener('wheel', stopScroll, { once: true, passive: true });
+            window.addEventListener('mousedown', stopScroll, { once: true, passive: true });
+
+            let lastTime = null;
+            function scrollStep(timestamp) {
+                if (!isAutoScrolling) return;
+
+                if (!lastTime) lastTime = timestamp;
+                const deltaTime = timestamp - lastTime;
+                lastTime = timestamp;
+
+                // Real-world speed: 25 pixels per literal second exactly.
+                currentY += (25 * deltaTime) / 1000; 
+                window.scrollTo(0, currentY);
+
+                // Continue recursively until hit absolute bottom of native body
+                if (currentY < document.body.scrollHeight - window.innerHeight) {
+                    requestAnimationFrame(scrollStep);
+                }
+            }
+            
+            requestAnimationFrame(scrollStep);
+        }, 500);
+
     }, 200);
 }
 
@@ -86,31 +128,19 @@ function updateCountdown() {
 setInterval(updateCountdown, 1000);
 updateCountdown();
 
-// Scroll Animation Observer
+// AOS Animation Library Initialization
 document.addEventListener("DOMContentLoaded", () => {
-    const scrollContainer = document.querySelector('.invitation-section');
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            // Because we are now observing the parent sections, we animate their children
-            const animatables = entry.target.querySelectorAll('.scroll-flower, .glass-panel, .doa-section, .aturcara-header, .aturcara-item');
-            if (entry.isIntersecting) {
-                animatables.forEach(el => el.classList.add('animate-in'));
-            } else {
-                animatables.forEach(el => el.classList.remove('animate-in'));
-            }
-        });
-    }, { 
-        root: scrollContainer,
-        threshold: 0.1 
+    
+    // Initialize standard AOS
+    AOS.init({
+        duration: 1000,
+        once: false,
+        mirror: true,
+        offset: 50,
+        easing: 'ease'
     });
 
-    // Observe the giant static parent divs, NOT the absolute positioned images!
-    document.querySelectorAll('.details-section, .aturcara-section').forEach(section => {
-        observer.observe(section);
-    });
-
-    // Observer for Hero Section (Rise up and fade out)
+    // Keep custom parallax floating logic strictly for the hero section since AOS is entrance-heavy
     const heroObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.intersectionRatio < 0.6) {
@@ -120,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }, { 
-        root: scrollContainer,
+        // We use default window root now because layout transitioned to native scrolling
         threshold: [0, 0.6] 
     });
 

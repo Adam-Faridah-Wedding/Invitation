@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adam & Faridah - Wedding Invitation</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>E-Wedding Invitation</title>
+    <!-- Google Fonts for elegant typography -->
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
-    <!-- FontAwesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="card-container">
@@ -50,7 +50,7 @@
 
         <!-- Second Section: Countdown -->
         <div class="countdown-section">
-            <div class="countdown-wrapper">
+            <div class="countdown-wrapper" data-aos="fade-up" data-aos-duration="1000">
                 <h2 class="countdown-header">COUNTING DAYS</h2>
                 <div class="countdown-timer">
                     <div class="time-box"><span id="days">00</span><small>Days</small></div>
@@ -63,21 +63,21 @@
 
         <!-- Third Section: Details (Scrolled View) -->
         <div class="details-section">
-            <!-- Scrolling background flowers -->
-            <img src="https://assets.invait.my/images/sentuhan-lily/s21.webp" class="scroll-flower s-flower-1" alt="lily s21">
-            <img src="https://assets.invait.my/images/sentuhan-lily/s22.webp" class="scroll-flower s-flower-2" alt="lily s22">
-            <img src="https://assets.invait.my/images/sentuhan-lily/s23.webp" class="scroll-flower s-flower-3" alt="lily s23">
-            <img src="https://assets.invait.my/images/sentuhan-lily/s24.webp" class="scroll-flower s-flower-4" alt="lily s24">
-            <img src="https://assets.invait.my/images/sentuhan-lily/s25.webp" class="scroll-flower s-flower-5" alt="lily s25">
+            <!-- Scrolling background flowers wrapped securely for AOS independent transforms -->
+            <div class="scroll-flower-wrapper s-flower-1" data-aos="fade-left" data-aos-delay="200" data-aos-duration="1500"><img src="https://assets.invait.my/images/sentuhan-lily/s21.webp" class="scroll-flower s-flower-1-img" alt="lily s21"></div>
+            <div class="scroll-flower-wrapper s-flower-2" data-aos="fade-left" data-aos-delay="300" data-aos-duration="1500"><img src="https://assets.invait.my/images/sentuhan-lily/s22.webp" class="scroll-flower s-flower-2-img" alt="lily s22"></div>
+            <div class="scroll-flower-wrapper s-flower-3" data-aos="fade-left" data-aos-delay="400" data-aos-duration="1500"><img src="https://assets.invait.my/images/sentuhan-lily/s23.webp" class="scroll-flower s-flower-3-img" alt="lily s23"></div>
+            <div class="scroll-flower-wrapper s-flower-4" data-aos="fade-up"   data-aos-delay="500" data-aos-duration="1500"><img src="https://assets.invait.my/images/sentuhan-lily/s24.webp" class="scroll-flower s-flower-4-img" alt="lily s24"></div>
+            <div class="scroll-flower-wrapper s-flower-5" data-aos="fade-left" data-aos-delay="600" data-aos-duration="1500"><img src="https://assets.invait.my/images/sentuhan-lily/s25.webp" class="scroll-flower s-flower-5-img" alt="lily s25"></div>
 
-            <div class="glass-panel">
-                <p>Dengan segala hormatnya kami</p><br>
-                <p class="parent-name">Shahabuddin bin Nik Mat<br><span class="ampersand">&amp;</span><br>Nazlina binti Hj. Abu Hassan</p>
-                <p class="small-text">(PIHAK PENGANTIN LELAKI)</p><br>
-                <p>Dengan penuh rasa kesyukuran,<br>kami ingin menjemput<br>/Tuan/Puan/Encik/Cik<br>ke majlis perkahwinan putera kami</p><br>
-                <h2 class="glass-names">Adam Safwan bin Shahabuddin <br><span class="ampersand">dengan pilihan hatinya</span><br>Teh Faridah binti Mat Zin</h2>
+            <div class="glass-panel" data-aos="fade-up" data-aos-duration="1200">
+                <p data-aos="fade-up" data-aos-delay="200">Dengan segala hormatnya kami</p><br>
+                <p class="parent-name" data-aos="fade-up" data-aos-delay="300">Shahabuddin bin Nik Mat<br><span class="ampersand">&amp;</span><br>Nazlina binti Hj. Abu Hassan</p>
+                <p class="small-text" data-aos="fade-up" data-aos-delay="400">(PIHAK PENGANTIN LELAKI)</p><br>
+                <p data-aos="fade-up" data-aos-delay="500">Dengan penuh rasa kesyukuran,<br>kami ingin menjemput<br>/Tuan/Puan/Encik/Cik<br>ke majlis perkahwinan putera kami</p><br>
+                <h2 class="glass-names" data-aos="zoom-in" data-aos-delay="600">Adam Safwan bin Shahabuddin <br><span class="ampersand">dengan pilihan hatinya</span><br>Teh Faridah binti Mat Zin</h2>
                 
-                <div class="event-details">
+                <div class="event-details" data-aos="fade-up" data-aos-delay="700">
                     <p class="event-label">Date</p>
                     <p class="event-value">16 . 05 . 2026 | SABTU</p>
                     
@@ -88,7 +88,7 @@
                     <p class="event-value">Dewan Seri Mutiara</p>
                 </div>
                 
-                <div class="glass-buttons">
+                <div class="glass-buttons" data-aos="fade-up" data-aos-delay="850">
                     <a href="#" class="glass-btn" onclick="openPopup('calendar')">Save the Date</a>
                     <a href="#" class="glass-btn" onclick="openPopup('rsvp')">RSVP</a>
                 </div>
@@ -97,29 +97,29 @@
 
         <!-- Fourth Section: Aturcara & Doa -->
         <div class="aturcara-section">
-            <div class="glass-panel aturcara-panel">
-                <h3 class="aturcara-header">ATURCARA MAJLIS</h3>
-                <div class="aturcara-item">
+            <div class="glass-panel aturcara-panel" data-aos="fade-up" data-aos-duration="1200">
+                <h3 class="aturcara-header" data-aos="zoom-in" data-aos-delay="200">ATURCARA MAJLIS</h3>
+                <div class="aturcara-item" data-aos="fade-up" data-aos-delay="300">
                     <span class="aturcara-time">11:30AM</span>
                     <span class="aturcara-event">Majlis Bermula</span>
                 </div>
-                <div class="aturcara-item">
+                <div class="aturcara-item" data-aos="fade-up" data-aos-delay="400">
                     <span class="aturcara-time">12:30PM</span>
                     <span class="aturcara-event">Ketibaan Pengantin</span>
                 </div>
-                <div class="aturcara-item">
+                <div class="aturcara-item" data-aos="fade-up" data-aos-delay="500">
                     <span class="aturcara-time">12:45PM</span>
                     <span class="aturcara-event">Sesi bergambar bersama pengantin</span>
                 </div>
-                <div class="aturcara-item">
+                <div class="aturcara-item" data-aos="fade-up" data-aos-delay="600">
                     <span class="aturcara-time">5:00PM</span>
                     <span class="aturcara-event">Majlis Bersurai</span>
                 </div>
             </div>
 
-            <div class="doa-section">
-                <h3 class="doa-header">Doa Untuk Pengantin</h3>
-                <p class="doa-text">"Semoga Allah memberkati kamu, dan memberkati atasmu, serta mengumpulkan kamu berdua dalam kebaikan"</p>
+            <div class="doa-section" data-aos="fade-up" data-aos-duration="1500" data-aos-offset="0">
+                <h3 class="doa-header" data-aos="zoom-in" data-aos-delay="300">Doa Untuk Pengantin</h3>
+                <p class="doa-text" data-aos="fade-up" data-aos-delay="500">"Semoga Allah memberkati kamu, dan memberkati atasmu, serta mengumpulkan kamu berdua dalam kebaikan"</p>
             </div>
         </div>
 
@@ -261,6 +261,7 @@
         </div>
     </div>
 
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
