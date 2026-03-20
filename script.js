@@ -84,6 +84,7 @@ function openInvitation() {
 }
 
 function openPopup(popupId) {
+    if (window.event) window.event.preventDefault(); // Stop the 'href=#' from shooting the page back to the top
     const container = document.querySelector('.card-container');
     
     // Hide all popup contents first
@@ -100,6 +101,7 @@ function openPopup(popupId) {
 }
 
 function closePopup() {
+    if (window.event) window.event.preventDefault();
     const container = document.querySelector('.card-container');
     container.classList.remove('popup-active');
 }
@@ -134,8 +136,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Initialize standard AOS
     AOS.init({
         duration: 1000,
-        once: false,
-        mirror: true,
+        once: true, // Crucial for mobile touchscreen: locks animations ON so finger swipe micro-stutters don't erase them
+        mirror: false, // Prevents elements from disappearing instantly when scrolling backwards
         offset: 50,
         easing: 'ease'
     });

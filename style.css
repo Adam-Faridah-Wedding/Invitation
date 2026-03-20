@@ -313,7 +313,7 @@ body {
 
 /* --- Popups --- */
 .popup-overlay {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -326,10 +326,12 @@ body {
 }
 
 .popup-container {
-    position: absolute;
+    position: fixed;
     bottom: -100%; /* Start off-screen */
-    left: 0;
+    left: 50%;
+    transform: translateX(-50%);
     width: 100%;
+    max-width: 450px;
     max-height: 80vh;
     background: #ffffff;
     border-top-left-radius: 20px;
@@ -564,7 +566,7 @@ body {
 
 /* Glass Panel Styles */
 .glass-panel {
-    background: rgba(255, 255, 255, 0);
+    background: rgba(255, 255, 255, 0.02);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     width: 85%;
@@ -574,6 +576,8 @@ body {
     z-index: 5;
     box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     border: 1px solid rgba(255,255,255,0.8);
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 
