@@ -511,19 +511,32 @@ body {
     z-index: 2;
 }
 
-.scroll-flower {
+.scroll-flower-wrapper {
     position: absolute;
     z-index: 1;
     pointer-events: none;
-    opacity: 0; 
+}
+
+.scroll-flower {
+    width: 100%;
     object-fit: contain;
+    pointer-events: none;
 }
 
 .s-flower-1 { top: 0%; right: -10%; width: 50%; }
+.s-flower-1-img { transform: rotate(10deg); animation: flowerSway 4s infinite alternate ease-in-out; }
+
 .s-flower-2 { top: 15%; right: -20%; width: 60%; }
+.s-flower-2-img { transform: rotate(-15deg); animation: flowerSway 4.5s infinite alternate ease-in-out; }
+
 .s-flower-3 { top: 45%; right: -25%; width: 50%; }
-.s-flower-4 { bottom:  -5%; right: 17%; width: 50%; transform: rotate(-20deg); }
-.s-flower-5 { bottom: 10%; right: -20%; width: 60%; transform: rotate(-20deg); }
+.s-flower-3-img { transform: rotate(15deg); animation: flowerSway 5s infinite alternate ease-in-out; }
+
+.s-flower-4 { bottom: -5%; right: 17%; width: 50%; }
+.s-flower-4-img { transform: rotate(-20deg); animation: flowerSway 4s infinite alternate ease-in-out; }
+
+.s-flower-5 { bottom: 10%; right: -20%; width: 60%; }
+.s-flower-5-img { transform: rotate(-20deg); animation: flowerSway 4.5s infinite alternate ease-in-out; }
 
 
 
@@ -574,7 +587,7 @@ body {
     padding: 35px 20px;
     text-align: center;
     z-index: 5;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.051);
     border: 1px solid rgba(255,255,255,0.8);
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
