@@ -12,6 +12,14 @@ function openInvitation() {
         // Trigger the transition to show inner section
         container.classList.add('opened');
         
+        // Autoplay background music
+        const musicIframe = document.getElementById('bgMusic');
+        if (musicIframe) {
+            let src = musicIframe.src;
+            if (!src.includes('autoplay=1')) {
+                musicIframe.src = src + (src.includes('?') ? '&' : '?') + 'autoplay=1';
+            }
+        }
     }, 200);
 }
 
