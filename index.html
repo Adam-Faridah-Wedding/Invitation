@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aisyah & Faiz - Wedding Invitation</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="card-container">
+        <!-- Cover Section -->
+        <div class="cover-section">
+            <img src="https://assets.invait.my/images/sentuhan-lily/s22.webp" alt="Pink Lily" class="flower flower-top-right">
+            <img src="https://assets.invait.my/images/sentuhan-lily/s26.webp" alt="Yellow Lily" class="flower flower-bottom-left">
+            
+            <button class="open-btn" onclick="openInvitation()">
+                <div class="names">
+                    Aisyah<br>
+                    <span class="ampersand">&</span><br>
+                    Faiz
+                </div>
+                <div class="open-text">OPEN</div>
+            </button>
+        </div>
+
+        <!-- Inner Invitation Section -->
+        <div class="invitation-section">
+            <!-- Left aligned flowers -->
+            <img src="https://assets.invait.my/images/sentuhan-lily/1.webp" class="inner-flower flower-1" alt="lily 1">
+            <img src="https://assets.invait.my/images/sentuhan-lily/2.webp" class="inner-flower flower-2" alt="lily 2">
+            <img src="https://assets.invait.my/images/sentuhan-lily/3.webp" class="inner-flower flower-3" alt="lily 3">
+            <img src="https://assets.invait.my/images/sentuhan-lily/4.webp" class="inner-flower flower-4" alt="lily 4">
+            <img src="https://assets.invait.my/images/sentuhan-lily/5.webp" class="inner-flower flower-5" alt="lily 5">
+
+            <!-- Center Content -->
+            <div class="invitation-content">
+                <p class="subtitle">The Wedding of</p>
+                <h1 class="main-names">Aisyah<br><span class="ampersand">&</span><br>Faiz</h1>
+                <p class="date">26 . 12 . 2026</p>
+                <p class="venue">Forest Valley Hall</p>
+            </div>
+
+            <!-- Bottom Navigation -->
+            <nav class="bottom-nav">
+                <a href="#" class="nav-item" onclick="openPopup('rsvp')">
+                    <i class="fa-regular fa-envelope"></i>
+                    <span>RSVP</span>
+                </a>
+                <a href="#" class="nav-item" onclick="openPopup('contact')">
+                    <i class="fa-solid fa-phone"></i>
+                    <span>Contact</span>
+                </a>
+                <a href="#" class="nav-item" onclick="openPopup('music')">
+                    <i class="fa-solid fa-music"></i>
+                    <span>Music</span>
+                </a>
+                <a href="#" class="nav-item" onclick="openPopup('location')">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <span>Location</span>
+                </a>
+                <a href="#" class="nav-item" onclick="openPopup('gift')">
+                    <i class="fa-solid fa-gift"></i>
+                    <span>Gift</span>
+                </a>
+                <a href="#" class="nav-item" onclick="openPopup('calendar')">
+                    <i class="fa-regular fa-calendar"></i>
+                    <span>Calendar</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- Popup Overlay -->
+        <div class="popup-overlay" id="popupOverlay" onclick="closePopup()"></div>
+
+        <!-- Popup Container -->
+        <div class="popup-container" id="popupContainer">
+            <button class="close-btn" onclick="closePopup()"><i class="fa-solid fa-xmark"></i></button>
+            
+            <!-- RSVP Content -->
+            <div class="popup-content" id="popup-rsvp">
+                <p class="rsvp-text">We look forward to celebrating with you!</p>
+                <p class="rsvp-subtext">Please let us know if you'll be attending:</p>
+                <div class="rsvp-buttons">
+                    <button class="action-btn" onclick="alert('Thank you for attending!')">Attending</button>
+                    <button class="action-btn outline" onclick="alert('We\\'ll miss you!')">Not Attending</button>
+                </div>
+            </div>
+
+            <!-- Contact Content -->
+            <div class="popup-content" id="popup-contact">
+                <h2 class="popup-header">Contact</h2>
+                <div class="contact-item">
+                    <div class="contact-info">
+                        <strong>Aisyah</strong><br>
+                        <span>+60 12-345 6789</span>
+                    </div>
+                    <a href="https://wa.me/60123456789" target="_blank" class="wa-btn"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-info">
+                        <strong>Faiz</strong><br>
+                        <span>+60 19-876 5432</span>
+                    </div>
+                    <a href="https://wa.me/60198765432" target="_blank" class="wa-btn"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+                </div>
+            </div>
+
+            <!-- Music Content -->
+            <div class="popup-content" id="popup-music">
+                <h2 class="popup-header">Music</h2>
+                <div class="iframe-container">
+                    <!-- User will put youtube link here -->
+                    <iframe width="100%" height="200" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <!-- Location Content -->
+            <div class="popup-content" id="popup-location">
+                <h2 class="popup-header">Location</h2>
+                <div class="iframe-container">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3984.146627467554!2d101.5799793147572!3d3.090389997753147!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31cc4d3b0b5e3f19%3A0x6b6e0b7d4c2e5b7!2sForest%20Valley%20Hall!5e0!3m2!1sen!2smy!4v1620000000000!5m2!1sen!2smy" width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+                <div class="location-buttons">
+                    <a href="https://maps.google.com/?q=Forest+Valley+Hall" target="_blank" class="action-btn"><i class="fa-solid fa-map-location-dot"></i> Google Maps</a>
+                    <a href="https://waze.com/ul?q=Forest+Valley+Hall" target="_blank" class="action-btn outline"><i class="fa-brands fa-waze"></i> Waze</a>
+                </div>
+            </div>
+
+            <!-- Gift Content -->
+            <div class="popup-content" id="popup-gift">
+                <h2 class="popup-header">Gift</h2>
+                <div class="qr-section">
+                    <div class="qr-card">
+                        <div class="qr-placeholder">QR 1</div>
+                        <p><strong>Aisyah</strong><br>Maybank<br>123456789012</p>
+                    </div>
+                    <div class="qr-card">
+                        <div class="qr-placeholder">QR 2</div>
+                        <p><strong>Faiz</strong><br>CIMB<br>098765432109</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calendar Content -->
+            <div class="popup-content" id="popup-calendar">
+                <h2 class="popup-header">Calendar</h2>
+                <div class="calendar-buttons">
+                    <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Aisyah+%26+Faiz+Wedding&dates=20261226T100000Z/20261226T140000Z&details=You+are+invited+to+our+wedding+reception.&location=Forest+Valley+Hall" target="_blank" class="action-btn"><i class="fa-brands fa-google"></i> Google Calendar</a>
+                    <a href="data:text/calendar;charset=utf8,BEGIN:VCALENDAR%0AVERSION:2.0%0ABEGIN:VEVENT%0AURL:https://example.com/%0ADTSTART:20261226T100000Z%0ADTEND:20261226T140000Z%0ASUMMARY:Aisyah %26 Faiz Wedding%0ADESCRIPTION:You are invited to our wedding reception.%0ALOCATION:Forest Valley Hall%0AEND:VEVENT%0AEND:VCALENDAR" download="wedding.ics" class="action-btn outline"><i class="fa-brands fa-apple"></i> Apple Calendar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
