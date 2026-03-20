@@ -10,6 +10,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    min-height: 100dvh; /* Dynamic height for mobile browsers */
     font-family: 'Montserrat', sans-serif;
     overflow: hidden;
 }
@@ -19,6 +20,7 @@ body {
     width: 100%;
     max-width: 450px; /* Mobile width container */
     height: 100vh;
+    height: 100dvh; /* Dynamic height for mobile browsers */
     position: relative;
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.08); /* Soft drop shadow */
     overflow: hidden;
@@ -251,6 +253,8 @@ body {
     left: 0;
     width: 100%;
     height: 70px;
+    height: calc(70px + env(safe-area-inset-bottom)); /* Accounts for iOS home bar */
+    padding-bottom: env(safe-area-inset-bottom);
     background: rgba(255, 255, 255, 0.007);
     backdrop-filter: blur(10px);
     display: flex;
