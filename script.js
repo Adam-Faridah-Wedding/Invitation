@@ -25,6 +25,10 @@ function openInvitation() {
             
             if (!src.includes('autoplay=1')) {
                 musicIframe.src = src + (src.includes('?') ? '&' : '?') + 'autoplay=1';
+            } else {
+                // If autoplay=1 was hardcoded in HTML, the browser likely blocked the page-load autoplay.
+                // We must force the iframe to reload during this valid click event so it knows to actually play!
+                musicIframe.src = src + '&clicked=1';
             }
         }
     }, 200);
