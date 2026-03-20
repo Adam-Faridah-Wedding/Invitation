@@ -519,8 +519,8 @@ body {
 .s-flower-1 { top: 0%; right: -10%; width: 50%; }
 .s-flower-2 { top: 15%; right: -20%; width: 60%; }
 .s-flower-3 { top: 45%; right: -25%; width: 50%; }
-.s-flower-4 { bottom:  -5%; right: 17%; width: 50%; transform: rotate(20deg); }
-.s-flower-5 { bottom: -5%; right: -20%; width: 60%; transform: rotate(-20deg); }
+.s-flower-4 { bottom:  -5%; right: 17%; width: 50%; transform: rotate(-20deg); }
+.s-flower-5 { bottom: 10%; right: -20%; width: 60%; transform: rotate(-20deg); }
 
 /* Override animation for flowers 1, 2, 3 to scale in from the RIGHT edge */
 .s-flower-1.animate-in, 
@@ -709,4 +709,88 @@ body {
 }
 .glass-btn:hover {
     background: rgba(0, 0, 0, 0.05);
+}
+
+/* --- Fourth Section: Aturcara --- */
+.aturcara-section {
+    position: relative;
+    width: 100%;
+    padding: 20px 0 80px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 2;
+}
+
+.aturcara-panel {
+    margin-bottom: 50px;
+    padding: 35px 20px;
+    width: 85%;
+}
+
+.aturcara-header {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    color: #333;
+    margin-bottom: 30px;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.aturcara-item {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.aturcara-item:last-child {
+    margin-bottom: 0;
+}
+
+.aturcara-time {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #2c2c2c;
+    margin-bottom: 3px;
+    letter-spacing: 0.5px;
+}
+
+.aturcara-event {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    color: #555;
+    text-align: center;
+}
+
+/* Doa Section */
+.doa-section {
+    width: 85%;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 40px;
+    opacity: 0;
+    transform: translateY(20px);
+}
+.doa-section.animate-in {
+    animation: contentFade 1.2s ease forwards;
+    animation-delay: 0.3s; /* Delay it slightly behind the glass panel */
+}
+
+.doa-header {
+    font-family: 'Great Vibes', cursive;
+    font-size: 26px;
+    color: #333;
+    margin-bottom: 15px;
+    font-weight: normal;
+}
+
+.doa-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    line-height: 1.6;
+    color: #555;
+    padding: 0;
 }

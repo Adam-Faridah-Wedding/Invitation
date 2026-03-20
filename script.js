@@ -92,8 +92,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            // Because we are now observing the parent .details-section, we animate its children
-            const animatables = entry.target.querySelectorAll('.scroll-flower, .glass-panel');
+            // Because we are now observing the parent sections, we animate their children
+            const animatables = entry.target.querySelectorAll('.scroll-flower, .glass-panel, .doa-section');
             if (entry.isIntersecting) {
                 animatables.forEach(el => el.classList.add('animate-in'));
             } else {
@@ -105,9 +105,10 @@ document.addEventListener("DOMContentLoaded", () => {
         threshold: 0.1 
     });
 
-    // Observe the giant static parent div, NOT the absolute positioned images!
-    const detailsSection = document.querySelector('.details-section');
-    if (detailsSection) observer.observe(detailsSection);
+    // Observe the giant static parent divs, NOT the absolute positioned images!
+    document.querySelectorAll('.details-section, .aturcara-section').forEach(section => {
+        observer.observe(section);
+    });
 
     // Observer for Hero Section (Rise up and fade out)
     const heroObserver = new IntersectionObserver((entries) => {
