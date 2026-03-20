@@ -10,6 +10,8 @@ function openInvitation() {
         
         // If enablejsapi=1 is present, use postMessage for instant, seamless playback without reloading the iframe
         if (src.includes('enablejsapi=1')) {
+            // Seek to exactly 0.01 seconds first, then play
+            musicIframe.contentWindow.postMessage('{"event":"command","func":"seekTo","args":[0.01, true]}', '*');
             musicIframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
         } else {
             // Fallback: reload the iframe with autoplay=1 SYNCHRONOUSLY
