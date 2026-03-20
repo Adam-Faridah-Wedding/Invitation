@@ -156,8 +156,8 @@ body {
 .flower-1 { top: -7%; left: -15%; width: 55%; }
 .flower-2 { top: 20%; left: -15%; width: 45%; }
 .flower-3 { top: 36%; left: -18%; width: 55%; }
-.flower-4 { bottom: 12%; left: -18%; width: 60%; }
-.flower-5 { bottom: -2%; left: -6%; width: 60%; rotate: 25deg; }
+.flower-4 { bottom: 10%; left: -25%; width: 60%; }
+.flower-5 { bottom: -6%; left: -6%; width: 60%; rotate: 25deg; }
 
 /* Animate flowers only when opened */
 .card-container.opened .inner-flower {
@@ -174,11 +174,11 @@ body {
 @keyframes flowerEnter {
     from {
         opacity: 0;
-        transform: translateX(-40px) scale(0.95);
+        transform: translatey(50px) scale(0.55);
     }
     to {
         opacity: 1;
-        transform: translateX(0) scale(1);
+        transform: translatey(0) scale(1);
     }
 }
 
