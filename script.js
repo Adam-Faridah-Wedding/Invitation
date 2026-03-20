@@ -17,7 +17,12 @@ function openInvitation() {
         if (musicIframe) {
             let src = musicIframe.src;
             
-            // Append autoplay=1 to the URL without destroying the start=9 parameter
+            // Convert standard share links to embed links for iframe compatibility
+            const ytMatch = src.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+            if (ytMatch && ytMatch[1]) {
+                src = `https://www.youtube.com/embed/${ytMatch[1]}`;
+            }
+            
             if (!src.includes('autoplay=1')) {
                 musicIframe.src = src + (src.includes('?') ? '&' : '?') + 'autoplay=1';
             }
