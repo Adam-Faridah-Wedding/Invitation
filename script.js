@@ -106,6 +106,39 @@ function closePopup() {
     container.classList.remove('popup-active');
 }
 
+// iOS Safari / Multi-Platform native Apple Calendar ICS file generator
+function downloadICS() {
+    if (window.event) window.event.preventDefault();
+    const icsContent = 
+`BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+DTSTART:20260516T033000Z
+DTEND:20260516T090000Z
+SUMMARY:Majlis Perkahwinan Adam & Faridah
+DESCRIPTION:Dengan segala hormatnya kami menjemput ke majlis perkahwinan putera kami.
+LOCATION:Dewan Seri Mutiara, Karangan, Kedah
+END:VEVENT
+END:VCALENDAR`;
+
+    // Detect iOS specifically because it notoriously blocks Data URI Blob downloads but natively parses explicit Base64 text/calendar
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+    if (isIOS) {
+        window.location.href = "data:text/calendar;base64," + btoa(icsContent);
+    } else {
+        const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'majlis_adam_faridah.ics');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+    }
+}
+
 // Countdown Logic
 function updateCountdown() {
     const targetDate = new Date("May 16, 2026 00:00:00").getTime();
