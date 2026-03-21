@@ -136,8 +136,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Initialize standard AOS
     AOS.init({
         duration: 1000,
-        once: true, // Crucial for mobile touchscreen: locks animations ON so finger swipe micro-stutters don't erase them
-        mirror: false, // Prevents elements from disappearing instantly when scrolling backwards
+        once: false, // Set to false so animations replay when scrolling down and up
+        mirror: false, // Turned off to prevent the Section 4 overscroll bug at the bottom of the page
         offset: 50,
         easing: 'ease'
     });
