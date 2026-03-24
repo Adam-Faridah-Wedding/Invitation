@@ -45,7 +45,7 @@ function openInvitation() {
                 { selector: '.flower-2', x: -200, y: -50, rotation: -25 },  // Mid flora
                 { selector: '.flower-3', x: -250, y: 0, rotation: 15 },     // Lower flora
                 { selector: '.flower-4', x: -200, y: 100, rotation: -20 },  // Bottom flora
-                { selector: '.flower-5', x: 0, y: 250, rotation: 15 } // Corner flora: aggressively peels straight down the Y axis
+                { selector: '.flower-5', x:    0, y: 250, rotation: 15 } // Corner flora: aggressively peels straight down the Y axis
             ];
         
             heroFlowers.forEach(flower => {
@@ -365,7 +365,7 @@ function submitRSVP(event) {
     // Disabling button to prevent double-clicks during transmission loading time
     const submitBtn = form.querySelector('button[type="submit"]');
     const originalText = submitBtn.innerText;
-    submitBtn.innerText = "Sending safely...";
+    submitBtn.innerText = "Sila Tunggu...";
     submitBtn.disabled = true;
 
     // Pack the fields identically to the Google Apps Script expected keys
@@ -377,53 +377,43 @@ function submitRSVP(event) {
     formData.append('Guest', guests);
     formData.append('Wish', wish);
 
+    // Start background sync seamlessly
     fetch(scriptURL, { method: 'POST', body: formData })
-        .then(response => {
-            // Only gracefully inject the wish visually into the DOM if the database successfully accepted it
-            if (wish !== '') {
-                const wishBoard = document.getElementById('wishBoard');
-                
-                // Remove the empty state placeholder if it exists!
-                const emptyState = document.getElementById('emptyWishState');
-                if (emptyState) {
-                    emptyState.remove();
-                }
+        .catch(error => console.error('Silent transmission error:', error.message));
 
-                const newWishHtml = `
-                    <div class="glass-panel wish-card new-wish">
-                        <p class="wish-message">"${wish}"</p>
-                        <p class="wish-name">- ${guestName}</p>
-                    </div>
-                `;
-                
-                wishBoard.insertAdjacentHTML('beforeend', newWishHtml);
-                
-                // Animate newly injected wish card natively
-                gsap.from('.new-wish', {
-                    y: 30,
-                    opacity: 0,
-                    duration: 0.8,
-                    ease: "power2.out"
-                });
-                
-                document.querySelector('.new-wish').classList.remove('new-wish');
-                
-                // Gracefully mathematically refresh all scroll triggers for the expanded height
-                setTimeout(() => ScrollTrigger.refresh(), 100);
-            }
-            
-            alert('Success! Your RSVP and wishes have been permanently recorded.');
-            closePopup();
-            form.reset();
-        })
-        .catch(error => {
-            console.error('Transmission Error!', error.message);
-            alert('Something went wrong connecting to the database. Please try again.');
-        })
-        .finally(() => {
-            submitBtn.innerText = originalText;
-            submitBtn.disabled = false;
-        });
+    // --- INSTANT OPTIMISTIC UI ---
+    if (wish !== '') {
+        const wishBoard = document.getElementById('wishBoard');
+        const emptyState = document.getElementById('emptyWishState');
+        if (emptyState) emptyState.remove();
+
+        const newWishHtml = `
+            <div class="glass-panel wish-card new-wish">
+                <p class="wish-message">"${wish}"</p>
+                <p class="wish-name">- ${guestName}</p>
+            </div>
+        `;
+        wishBoard.insertAdjacentHTML('afterbegin', newWishHtml);
+        
+        gsap.from('.new-wish', { y: 30, opacity: 0, duration: 0.8, ease: "power2.out" });
+        setTimeout(() => {
+            const el = document.querySelector('.new-wish');
+            if (el) el.classList.remove('new-wish');
+            ScrollTrigger.refresh();
+        }, 100);
+    }
+    
+    // Instantly update UI counters safely
+    const elHadir = document.getElementById('countHadir');
+    if (elHadir && !isNaN(parseInt(elHadir.innerText))) {
+        elHadir.innerText = parseInt(elHadir.innerText) + 1;
+    }
+
+    alert('Success! Your RSVP and wishes have been permanently recorded.');
+    closePopup();
+    form.reset();
+    submitBtn.innerText = originalText;
+    submitBtn.disabled = false;
 }
 
 // Submit RSVP form explicitly for Tidak Hadir tracking
@@ -448,19 +438,43 @@ function submitRSVPTidak(event) {
     formData.append('Guest', "Tidak Hadir");
     formData.append('Wish', wish);
 
+    // Start background sync seamlessly
     fetch(scriptURL, { method: 'POST', body: formData })
-        .then(response => {
-            alert('Terima kasih. RSVP anda telah direkodkan.');
-            closePopup();
-            form.reset();
-            // Automatically refresh the totals on screen
-            fetchWishes();
-        })
-        .catch(error => console.error('Transmission Error!', error.message))
-        .finally(() => {
-            submitBtn.innerText = originalText;
-            submitBtn.disabled = false;
-        });
+        .catch(error => console.error('Silent transmission error:', error.message));
+
+    // --- INSTANT OPTIMISTIC UI ---
+    if (wish !== '') {
+        const wishBoard = document.getElementById('wishBoard');
+        const emptyState = document.getElementById('emptyWishState');
+        if (emptyState) emptyState.remove();
+
+        const newWishHtml = `
+            <div class="glass-panel wish-card new-wish">
+                <p class="wish-message">"${wish}"</p>
+                <p class="wish-name">- ${guestName}</p>
+            </div>
+        `;
+        wishBoard.insertAdjacentHTML('afterbegin', newWishHtml);
+        
+        gsap.from('.new-wish', { y: 30, opacity: 0, duration: 0.8, ease: "power2.out" });
+        setTimeout(() => {
+            const el = document.querySelector('.new-wish');
+            if (el) el.classList.remove('new-wish');
+            ScrollTrigger.refresh();
+        }, 100);
+    }
+    
+    // Instantly update UI counters safely
+    const elTidak = document.getElementById('countTidakHadir');
+    if (elTidak && !isNaN(parseInt(elTidak.innerText))) {
+        elTidak.innerText = parseInt(elTidak.innerText) + 1;
+    }
+
+    alert('Terima kasih. RSVP anda telah direkodkan.');
+    closePopup();
+    form.reset();
+    submitBtn.innerText = originalText;
+    submitBtn.disabled = false;
 }
 
 // Submit Isolated Wish Form (Without RSVP incrementation)
@@ -485,19 +499,37 @@ function submitWishOnly(event) {
     formData.append('Guest', "Hanya Ucapan"); // Explicitly safeguarding Google Sheet tracking logic
     formData.append('Wish', wishMessage);
 
+    // Start background sync seamlessly
     fetch(scriptURL, { method: 'POST', body: formData })
-        .then(response => {
-            alert('Ucapan anda telah berjaya dihantar. Terima kasih!');
-            closePopup();
-            form.reset();
-            // Automatically refresh the wish board immediately so they can see their message
-            fetchWishes();
-        })
-        .catch(error => console.error('Transmission Error!', error.message))
-        .finally(() => {
-            submitBtn.innerText = originalText;
-            submitBtn.disabled = false;
-        });
+        .catch(error => console.error('Silent transmission error:', error.message));
+
+    // --- INSTANT OPTIMISTIC UI ---
+    if (wishMessage !== '') {
+        const wishBoard = document.getElementById('wishBoard');
+        const emptyState = document.getElementById('emptyWishState');
+        if (emptyState) emptyState.remove();
+
+        const newWishHtml = `
+            <div class="glass-panel wish-card new-wish">
+                <p class="wish-message">"${wishMessage}"</p>
+                <p class="wish-name">- ${guestName}</p>
+            </div>
+        `;
+        wishBoard.insertAdjacentHTML('afterbegin', newWishHtml);
+        
+        gsap.from('.new-wish', { y: 30, opacity: 0, duration: 0.8, ease: "power2.out" });
+        setTimeout(() => {
+            const el = document.querySelector('.new-wish');
+            if (el) el.classList.remove('new-wish');
+            ScrollTrigger.refresh();
+        }, 100);
+    }
+
+    alert('Ucapan anda telah berjaya dihantar. Terima kasih!');
+    closePopup();
+    form.reset();
+    submitBtn.innerText = originalText;
+    submitBtn.disabled = false;
 }
 
 // Fetch existing wishes securely from Google Sheets on page load!
