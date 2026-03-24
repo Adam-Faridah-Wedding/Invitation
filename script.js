@@ -9,10 +9,11 @@ function openInvitation() {
     if (bounceTween) bounceTween.kill();
     gsap.set(btn, { y: 0 }); // Reset position safely
     
-    // Play background video strictly natively
-    const bgAudio = document.getElementById('bgAudio');
-    if (bgAudio) {
-        bgAudio.play().catch(e => console.warn("Video autoplay blocked by browser:", e));
+    // Play YouTube music natively via Youtube API PostMessage
+    const ytMusic = document.getElementById('ytMusic');
+    if (ytMusic) {
+        // Send a silent command to the YouTube iframe to start playing instantly
+        ytMusic.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
     }
 
 
@@ -265,19 +266,6 @@ updateCountdown();
 // Animation Initialization
 document.addEventListener("DOMContentLoaded", () => {
     
-    // Dynamically fetch the video and assign it as a Blob URL!
-    fetch('song/background-music.mp4')
-        .then(res => res.blob())
-        .then(blob => {
-            const blobUrl = URL.createObjectURL(blob);
-            const bgAudio = document.getElementById('bgAudio');
-            if (bgAudio) {
-                bgAudio.src = blobUrl;
-                bgAudio.load(); // Intelligently tells the browser to load the new Blob source
-            }
-        })
-        .catch(err => console.error('Error creating Blob URL:', err));
-
     // 0. Dial out to database and silently retrieve the live Wish list
     fetchWishes();
 
