@@ -738,6 +738,24 @@ body {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    max-height: 520px; /* Limits height to approximately 5 boxes */
+    overflow-y: auto; /* Enables vertical scrolling when content exceeds the max-height */
+    padding-right: 10px; /* Accommodate scrollbar gracefully */
+}
+
+/* Minimalist elegant scrollbar */
+.wish-board::-webkit-scrollbar {
+    width: 6px;
+}
+.wish-board::-webkit-scrollbar-track {
+    background: transparent;
+}
+.wish-board::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+.wish-board::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.4);
 }
 
 .wish-card {
