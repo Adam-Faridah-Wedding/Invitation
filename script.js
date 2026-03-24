@@ -426,6 +426,43 @@ function submitRSVP(event) {
         });
 }
 
+// Submit RSVP form explicitly for Tidak Hadir tracking
+function submitRSVPTidak(event) {
+    event.preventDefault();
+    const form = document.getElementById('rsvpFormTidak');
+    const guestName = document.getElementById('rsvpNameTidak').value.trim();
+    const wish = document.getElementById('rsvpWishTidak').value.trim();
+    
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyECOWRFdPID9Zc0tfXIgvMaOpyM0QxVW66AxRfg5yKJ5_TrOp1u51CCnkY1lNVujKRbQ/exec';
+    
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerText;
+    submitBtn.innerText = "Sending securely...";
+    submitBtn.disabled = true;
+
+    const formData = new FormData();
+    formData.append('Name', guestName);
+    formData.append('name', guestName);
+    formData.append('Nama', guestName);
+    formData.append('Name ', guestName);
+    formData.append('Guest', "Tidak Hadir");
+    formData.append('Wish', wish);
+
+    fetch(scriptURL, { method: 'POST', body: formData })
+        .then(response => {
+            alert('Terima kasih. RSVP anda telah direkodkan.');
+            closePopup();
+            form.reset();
+            // Automatically refresh the totals on screen
+            fetchWishes();
+        })
+        .catch(error => console.error('Transmission Error!', error.message))
+        .finally(() => {
+            submitBtn.innerText = originalText;
+            submitBtn.disabled = false;
+        });
+}
+
 // Fetch existing wishes securely from Google Sheets on page load!
 function fetchWishes() {
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyECOWRFdPID9Zc0tfXIgvMaOpyM0QxVW66AxRfg5yKJ5_TrOp1u51CCnkY1lNVujKRbQ/exec';
@@ -441,20 +478,38 @@ function fetchWishes() {
                 // Reverse the array so the newest wishes dynamically spawn at the top of the wall!
                 const wishes = res.data.reverse();
                 let validWishesCount = 0;
+                let hadirTotal = 0;
+                let tidakHadirTotal = 0;
                 
                 wishes.forEach(row => {
+                    // Extract safe name variable identically to UI fallback
+                    const safeName = row.Name || row.name || row['Name '] || row.Nama;
+                    
+                    // Categorize RSVPs intelligently
+                    if (row.Guest === "Tidak Hadir" || row.Guest === "tidak hadir" || row.Guests === "Tidak Hadir") {
+                        tidakHadirTotal++;
+                    } else if (safeName && safeName.trim() !== '') {
+                        hadirTotal++; // Any valid name entry without 'Tidak Hadir' qualifies as one real submission
+                    }
+
                     // Only render people who actually wrote a wish string mathematically
                     if (row.Wish && row.Wish.trim() !== '') {
                         const wishHtml = `
                             <div class="glass-panel wish-card">
                                 <p class="wish-message">"${row.Wish}"</p>
-                                <p class="wish-name">- ${row.Name || row.name || row['Name '] || row.Nama || 'Guest'}</p>
+                                <p class="wish-name">- ${safeName || 'Guest'}</p>
                             </div>
                         `;
                         wishBoard.insertAdjacentHTML('beforeend', wishHtml);
                         validWishesCount++;
                     }
                 });
+                
+                // Inject the live counts straight into the DOM gracefully
+                const elHadir = document.getElementById('countHadir');
+                const elTidak = document.getElementById('countTidakHadir');
+                if (elHadir) elHadir.innerText = hadirTotal;
+                if (elTidak) elTidak.innerText = tidakHadirTotal;
                 
                 if (validWishesCount === 0) {
                     wishBoard.innerHTML = `

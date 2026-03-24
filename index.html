@@ -95,6 +95,21 @@
             </div>
         </div>
 
+        <!-- RSVP Count Section -->
+        <div class="rsvp-count-section">
+            <div class="glass-panel rsvp-count-panel">
+                <div class="count-box">
+                    <p class="count-number" id="countHadir">0</p>
+                    <p class="count-label">HADIR</p>
+                </div>
+                <div class="count-divider"></div>
+                <div class="count-box">
+                    <p class="count-number" id="countTidakHadir">0</p>
+                    <p class="count-label">TIDAK HADIR</p>
+                </div>
+            </div>
+        </div>
+
         <!-- Fourth Section: Aturcara & Doa -->
         <div class="aturcara-section">
             <div class="glass-panel aturcara-panel">
@@ -131,6 +146,11 @@
                     <p class="wish-message" style="font-style: normal; text-align: center; color: #777;">Loading wishes...</p>
                 </div>
             </div>
+        </div>
+
+        <!-- Footer Credit -->
+        <div class="footer-credit">
+            <span>designed by adam safwan</span>
         </div>
 
     </div> <!-- Closes invitation-section -->
@@ -173,7 +193,7 @@
                 <p class="rsvp-subtext">Please let us know if you'll be attending:</p>
                 <div class="rsvp-buttons">
                     <button class="action-btn" onclick="openPopup(event, 'rsvp-form')">Hadir</button>
-                    <button class="action-btn outline" onclick="alert('We\'ll miss you!')">Tidak Hadir</button>
+                    <button class="action-btn outline" onclick="openPopup(event, 'rsvp-form-tidak')">Tidak Hadir</button>
                 </div>
             </div>
 
@@ -192,6 +212,18 @@
                     </select>
                     <textarea class="wish-textarea" id="rsvpWish" placeholder="Wishes for the couple (Optional)" rows="3"></textarea>
                     <button type="submit" class="action-btn">Confirm RSVP</button>
+                    <button type="button" class="action-btn outline" onclick="openPopup(event, 'rsvp')">Back</button>
+                </form>
+            </div>
+
+            <!-- RSVP Form Content (Tidak Hadir) -->
+            <div class="popup-content" id="popup-rsvp-form-tidak">
+                <h2 class="popup-header">Maaf</h2>
+                <form class="wish-form" id="rsvpFormTidak" onsubmit="submitRSVPTidak(event)">
+                    <p class="rsvp-subtext">Sila tinggalkan mesej untuk pengantin (Optional)</p>
+                    <input type="text" class="wish-input" id="rsvpNameTidak" placeholder="Nama Anda" required>
+                    <textarea class="wish-textarea" id="rsvpWishTidak" placeholder="Ucapan (Optional)" rows="3"></textarea>
+                    <button type="submit" class="action-btn">Confirm Tidak Hadir</button>
                     <button type="button" class="action-btn outline" onclick="openPopup(event, 'rsvp')">Back</button>
                 </form>
             </div>
