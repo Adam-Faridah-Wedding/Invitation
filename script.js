@@ -10,9 +10,9 @@ function openInvitation() {
     gsap.set(btn, { y: 0 }); // Reset position safely
     
     // Play background video strictly natively
-    const bgVideo = document.getElementById('bgMusic');
-    if (bgVideo) {
-        bgVideo.play().catch(e => console.warn("Video autoplay blocked by browser:", e));
+    const bgAudio = document.getElementById('bgAudio');
+    if (bgAudio) {
+        bgAudio.play().catch(e => console.warn("Video autoplay blocked by browser:", e));
     }
 
 
@@ -270,10 +270,10 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(res => res.blob())
         .then(blob => {
             const blobUrl = URL.createObjectURL(blob);
-            const bgMusic = document.getElementById('bgMusic');
-            if (bgMusic) {
-                bgMusic.src = blobUrl;
-                bgMusic.load(); // Intelligently tells the browser to load the new Blob source
+            const bgAudio = document.getElementById('bgAudio');
+            if (bgAudio) {
+                bgAudio.src = blobUrl;
+                bgAudio.load(); // Intelligently tells the browser to load the new Blob source
             }
         })
         .catch(err => console.error('Error creating Blob URL:', err));
