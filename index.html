@@ -89,8 +89,8 @@
                 </div>
                 
                 <div class="glass-buttons">
-                    <a href="#" class="glass-btn" onclick="openPopup(event, 'calendar')">Save the Date</a>
-                    <a href="#" class="glass-btn" onclick="openPopup(event, 'rsvp')">RSVP</a>
+                    <a href="#" class="glass-btn" onclick="openPopup(event, 'rsvp')">Sahkan Kehadiran</a>
+                    <a href="#" class="glass-btn outline" onclick="openPopup(event, 'wish-form-only')">Tulis Ucapan</a>
                 </div>
             </div>
         </div>
@@ -225,6 +225,18 @@
                     <textarea class="wish-textarea" id="rsvpWishTidak" placeholder="Ucapan (Optional)" rows="3"></textarea>
                     <button type="submit" class="action-btn">Confirm Tidak Hadir</button>
                     <button type="button" class="action-btn outline" onclick="openPopup(event, 'rsvp')">Back</button>
+                </form>
+            </div>
+
+            <!-- Isolated Wish Form Content -->
+            <div class="popup-content" id="popup-wish-form-only">
+                <h2 class="popup-header">Tulis Ucapan</h2>
+                <form class="wish-form" id="wishFormOnly" onsubmit="submitWishOnly(event)">
+                    <p class="rsvp-subtext">Sila tinggalkan ucapan manis untuk pengantin</p>
+                    <input type="text" class="wish-input" id="wishNameOnly" placeholder="Nama Anda" required>
+                    <textarea class="wish-textarea" id="wishMessageOnly" placeholder="Tuliskan ucapan anda di sini..." rows="4" required></textarea>
+                    <button type="submit" class="action-btn">Hantar Ucapan</button>
+                    <button type="button" class="action-btn outline" onclick="closePopup()">Batal</button>
                 </form>
             </div>
 

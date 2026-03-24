@@ -463,6 +463,43 @@ function submitRSVPTidak(event) {
         });
 }
 
+// Submit Isolated Wish Form (Without RSVP incrementation)
+function submitWishOnly(event) {
+    event.preventDefault();
+    const form = document.getElementById('wishFormOnly');
+    const guestName = document.getElementById('wishNameOnly').value.trim();
+    const wishMessage = document.getElementById('wishMessageOnly').value.trim();
+    
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyECOWRFdPID9Zc0tfXIgvMaOpyM0QxVW66AxRfg5yKJ5_TrOp1u51CCnkY1lNVujKRbQ/exec';
+    
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerText;
+    submitBtn.innerText = "Sila tunggu...";
+    submitBtn.disabled = true;
+
+    const formData = new FormData();
+    formData.append('Name', guestName);
+    formData.append('name', guestName);
+    formData.append('Nama', guestName);
+    formData.append('Name ', guestName);
+    formData.append('Guest', "Hanya Ucapan"); // Explicitly safeguarding Google Sheet tracking logic
+    formData.append('Wish', wishMessage);
+
+    fetch(scriptURL, { method: 'POST', body: formData })
+        .then(response => {
+            alert('Ucapan anda telah berjaya dihantar. Terima kasih!');
+            closePopup();
+            form.reset();
+            // Automatically refresh the wish board immediately so they can see their message
+            fetchWishes();
+        })
+        .catch(error => console.error('Transmission Error!', error.message))
+        .finally(() => {
+            submitBtn.innerText = originalText;
+            submitBtn.disabled = false;
+        });
+}
+
 // Fetch existing wishes securely from Google Sheets on page load!
 function fetchWishes() {
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyECOWRFdPID9Zc0tfXIgvMaOpyM0QxVW66AxRfg5yKJ5_TrOp1u51CCnkY1lNVujKRbQ/exec';
@@ -488,6 +525,8 @@ function fetchWishes() {
                     // Categorize RSVPs intelligently
                     if (row.Guest === "Tidak Hadir" || row.Guest === "tidak hadir" || row.Guests === "Tidak Hadir") {
                         tidakHadirTotal++;
+                    } else if (row.Guest === "Hanya Ucapan" || row.Guest === "hanya ucapan" || String(row.Guest).includes("Hanya Ucapan")) {
+                        // Crucial: Do not increment Hadir/Tidak counters for isolated wishes!
                     } else if (safeName && safeName.trim() !== '') {
                         hadirTotal++; // Any valid name entry without 'Tidak Hadir' qualifies as one real submission
                     }
