@@ -9,11 +9,10 @@ function openInvitation() {
     if (bounceTween) bounceTween.kill();
     gsap.set(btn, { y: 0 }); // Reset position safely
     
-    // Play YouTube music natively via Youtube API PostMessage
-    const ytMusic = document.getElementById('ytMusic');
-    if (ytMusic) {
-        // Send a silent command to the YouTube iframe to start playing instantly
-        ytMusic.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+    // Play MP3 background music intuitively natively
+    const bgAudio = document.getElementById('bgAudio');
+    if (bgAudio) {
+        bgAudio.play().catch(e => console.warn("Audio autoplay natively blocked by browser:", e));
     }
 
 
@@ -470,4 +469,24 @@ function fetchWishes() {
             }
         })
         .catch(error => console.error('Silent error fetching database wishes:', error));
+}
+
+// Background Audio Toggling
+function toggleAudio() {
+    const bgAudio = document.getElementById('bgAudio');
+    const audioIcon = document.getElementById('audioIcon');
+    const audioControl = document.getElementById('audioControl');
+    
+    if (bgAudio) {
+        if (bgAudio.paused || bgAudio.muted) {
+            bgAudio.muted = false;
+            bgAudio.play().catch(e => console.log('Playback prevented by browser', e));
+            audioIcon.className = 'fa-solid fa-volume-high';
+            audioControl.classList.remove('muted');
+        } else {
+            bgAudio.pause();
+            audioIcon.className = 'fa-solid fa-volume-xmark';
+            audioControl.classList.add('muted');
+        }
+    }
 }
