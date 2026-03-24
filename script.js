@@ -239,6 +239,9 @@ updateCountdown();
 // Animation Initialization
 document.addEventListener("DOMContentLoaded", () => {
     
+    // 0. Dial out to database and silently retrieve the live Wish list
+    fetchWishes();
+
     // 1. Initialize GSAP bounce on the Open Button
     bounceTween = gsap.to('.open-btn', {
         y: -12,
@@ -322,40 +325,105 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// Submit RSVP form and inject wishes dynamically safely
+// Submit RSVP form and securely transmit data to Google Sheets via Apps Script Fetch API
 function submitRSVP(event) {
     event.preventDefault();
     const form = document.getElementById('rsvpForm');
-    const name = document.getElementById('rsvpName').value.trim();
+    const guestName = document.getElementById('rsvpName').value.trim();
     const wish = document.getElementById('rsvpWish').value.trim();
+    const guests = document.getElementById('rsvpGuests').value;
     
-    if (wish !== '') {
-        const wishBoard = document.getElementById('wishBoard');
-        const newWishHtml = `
-            <div class="glass-panel wish-card new-wish">
-                <p class="wish-message">"${wish}"</p>
-                <p class="wish-name">- ${name}</p>
-            </div>
-        `;
-        
-        wishBoard.insertAdjacentHTML('beforeend', newWishHtml);
-        
-        // Animate newly injected wish card natively
-        gsap.from('.new-wish', {
-            y: 30,
-            opacity: 0,
-            duration: 0.8,
-            ease: "power2.out"
+    // IMPORTANT: Replace this placeholder with your generated Google Web App URL!
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyECOWRFdPID9Zc0tfXIgvMaOpyM0QxVW66AxRfg5yKJ5_TrOp1u51CCnkY1lNVujKRbQ/exec';
+    
+    // Disabling button to prevent double-clicks during transmission loading time
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerText;
+    submitBtn.innerText = "Sending safely...";
+    submitBtn.disabled = true;
+
+    // Pack the fields identically to the Google Apps Script expected keys
+    const formData = new FormData();
+    formData.append('Name', guestName);
+    formData.append('name', guestName);
+    formData.append('Nama', guestName);
+    formData.append('Name ', guestName);
+    formData.append('Guest', guests);
+    formData.append('Wish', wish);
+
+    fetch(scriptURL, { method: 'POST', body: formData })
+        .then(response => {
+            // Only gracefully inject the wish visually into the DOM if the database successfully accepted it
+            if (wish !== '') {
+                const wishBoard = document.getElementById('wishBoard');
+                const newWishHtml = `
+                    <div class="glass-panel wish-card new-wish">
+                        <p class="wish-message">"${wish}"</p>
+                        <p class="wish-name">- ${guestName}</p>
+                    </div>
+                `;
+                
+                wishBoard.insertAdjacentHTML('beforeend', newWishHtml);
+                
+                // Animate newly injected wish card natively
+                gsap.from('.new-wish', {
+                    y: 30,
+                    opacity: 0,
+                    duration: 0.8,
+                    ease: "power2.out"
+                });
+                
+                document.querySelector('.new-wish').classList.remove('new-wish');
+                
+                // Gracefully mathematically refresh all scroll triggers for the expanded height
+                setTimeout(() => ScrollTrigger.refresh(), 100);
+            }
+            
+            alert('Success! Your RSVP and wishes have been permanently recorded.');
+            closePopup();
+            form.reset();
+        })
+        .catch(error => {
+            console.error('Transmission Error!', error.message);
+            alert('Something went wrong connecting to the database. Please try again.');
+        })
+        .finally(() => {
+            submitBtn.innerText = originalText;
+            submitBtn.disabled = false;
         });
-        
-        // Clean up the target class
-        document.querySelector('.new-wish').classList.remove('new-wish');
-        
-        // Gracefully mathematically refresh all scroll triggers for the expanded height
-        setTimeout(() => ScrollTrigger.refresh(), 100);
-    }
+}
+
+// Fetch existing wishes securely from Google Sheets on page load!
+function fetchWishes() {
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyECOWRFdPID9Zc0tfXIgvMaOpyM0QxVW66AxRfg5yKJ5_TrOp1u51CCnkY1lNVujKRbQ/exec';
+    const wishBoard = document.getElementById('wishBoard');
     
-    alert('Thank you! Your RSVP and wishes have been submitted.');
-    closePopup();
-    form.reset();
+    fetch(scriptURL)
+        .then(response => response.json())
+        .then(res => {
+            if (res.result === 'success' && res.data) {
+                // Clear the hardcoded placeholder samples completely!
+                wishBoard.innerHTML = '';
+                
+                // Reverse the array so the newest wishes dynamically spawn at the top of the wall!
+                const wishes = res.data.reverse();
+                
+                wishes.forEach(row => {
+                    // Only render people who actually wrote a wish string mathematically
+                    if (row.Wish && row.Wish.trim() !== '') {
+                        const wishHtml = `
+                            <div class="glass-panel wish-card">
+                                <p class="wish-message">"${row.Wish}"</p>
+                                <p class="wish-name">- ${row.Name || row.name || row['Name '] || row.Nama || 'Guest'}</p>
+                            </div>
+                        `;
+                        wishBoard.insertAdjacentHTML('beforeend', wishHtml);
+                    }
+                });
+                
+                // Safely rebuild the entire page's GSAP scroll height constraints to accommodate the new DOM nodes!
+                setTimeout(() => ScrollTrigger.refresh(), 500);
+            }
+        })
+        .catch(error => console.error('Silent error fetching database wishes:', error));
 }
