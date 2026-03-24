@@ -356,6 +356,13 @@ function submitRSVP(event) {
             // Only gracefully inject the wish visually into the DOM if the database successfully accepted it
             if (wish !== '') {
                 const wishBoard = document.getElementById('wishBoard');
+                
+                // Remove the empty state placeholder if it exists!
+                const emptyState = document.getElementById('emptyWishState');
+                if (emptyState) {
+                    emptyState.remove();
+                }
+
                 const newWishHtml = `
                     <div class="glass-panel wish-card new-wish">
                         <p class="wish-message">"${wish}"</p>
@@ -407,6 +414,7 @@ function fetchWishes() {
                 
                 // Reverse the array so the newest wishes dynamically spawn at the top of the wall!
                 const wishes = res.data.reverse();
+                let validWishesCount = 0;
                 
                 wishes.forEach(row => {
                     // Only render people who actually wrote a wish string mathematically
@@ -418,8 +426,17 @@ function fetchWishes() {
                             </div>
                         `;
                         wishBoard.insertAdjacentHTML('beforeend', wishHtml);
+                        validWishesCount++;
                     }
                 });
+                
+                if (validWishesCount === 0) {
+                    wishBoard.innerHTML = `
+                        <div class="glass-panel wish-card" id="emptyWishState">
+                            <p class="wish-message" style="font-style: normal; text-align: center; color: #777;">Be the first to leave a wish!</p>
+                        </div>
+                    `;
+                }
                 
                 // Safely rebuild the entire page's GSAP scroll height constraints to accommodate the new DOM nodes!
                 setTimeout(() => ScrollTrigger.refresh(), 500);
