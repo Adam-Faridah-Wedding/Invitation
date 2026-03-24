@@ -265,6 +265,19 @@ updateCountdown();
 // Animation Initialization
 document.addEventListener("DOMContentLoaded", () => {
     
+    // Dynamically fetch the video and assign it as a Blob URL!
+    fetch('song/background-music.mp4')
+        .then(res => res.blob())
+        .then(blob => {
+            const blobUrl = URL.createObjectURL(blob);
+            const bgMusic = document.getElementById('bgMusic');
+            if (bgMusic) {
+                bgMusic.src = blobUrl;
+                bgMusic.load(); // Intelligently tells the browser to load the new Blob source
+            }
+        })
+        .catch(err => console.error('Error creating Blob URL:', err));
+
     // 0. Dial out to database and silently retrieve the live Wish list
     fetchWishes();
 
