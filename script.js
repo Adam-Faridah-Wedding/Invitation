@@ -9,26 +9,10 @@ function openInvitation() {
     if (bounceTween) bounceTween.kill();
     gsap.set(btn, { y: 0 }); // Reset position safely
     
-    // Play music synchronously
-    const musicIframe = document.getElementById('bgMusic');
-    if (musicIframe) {
-        let src = musicIframe.src;
-        if (src.includes('enablejsapi=1')) {
-            musicIframe.contentWindow.postMessage('{"event":"command","func":"seekTo","args":[0.01, true]}', '*');
-            musicIframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-        } else {
-            if (!src.includes('youtube.com/embed') && !src.includes('youtube-nocookie.com/embed')) {
-                const ytMatch = src.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
-                if (ytMatch && ytMatch[1]) {
-                    src = `https://www.youtube.com/embed/${ytMatch[1]}?`;
-                }
-            }
-            if (!src.includes('autoplay=1')) {
-                musicIframe.src = src + (src.includes('?') ? '&' : '?') + 'autoplay=1';
-            } else if (!src.includes('clicked=1')) {
-                musicIframe.src = src + '&clicked=1';
-            }
-        }
+    // Play background video strictly natively
+    const bgVideo = document.getElementById('bgMusic');
+    if (bgVideo) {
+        bgVideo.play().catch(e => console.warn("Video autoplay blocked by browser:", e));
     }
 
 
@@ -210,6 +194,48 @@ END:VCALENDAR`;
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
     }
+}
+
+// Copy to Clipboard Utility
+function copyText(button, text) {
+    // Elegant fallback for non-secure contexts (http) or older iOS
+    if (!navigator.clipboard || !window.isSecureContext) {
+        fallbackCopy(text, button);
+        return;
+    }
+    navigator.clipboard.writeText(text).then(() => showCopySuccess(button)).catch(() => fallbackCopy(text, button));
+}
+
+function fallbackCopy(text, button) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.opacity = "0";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        showCopySuccess(button);
+    } catch (err) {
+        console.error('Fallback copy failed', err);
+    }
+    document.body.removeChild(textArea);
+}
+
+function showCopySuccess(button) {
+    const originalClass = button.className;
+    const originalColor = button.style.color;
+    
+    button.className = 'fa-solid fa-check copy-icon';
+    button.style.color = '#25D366'; // Green success visual
+    
+    setTimeout(() => {
+        button.className = originalClass;
+        button.style.color = originalColor;
+    }, 2000);
 }
 
 // Countdown Logic
