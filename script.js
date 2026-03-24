@@ -1,20 +1,22 @@
+// Global GSAP timeline/tweens
+let bounceTween;
+
 function openInvitation() {
     const btn = document.querySelector('.open-btn');
     const container = document.querySelector('.card-container');
+
+    // Kill the infinite GSAP bounce cleanly before we animate
+    if (bounceTween) bounceTween.kill();
+    gsap.set(btn, { y: 0 }); // Reset position safely
     
-    // --- FIX: Play music synchronously ---
-    // Browsers block autoplay if the code is inside an asynchronous setTimeout because it loses the "user click" permission.
+    // Play music synchronously
     const musicIframe = document.getElementById('bgMusic');
     if (musicIframe) {
         let src = musicIframe.src;
-        
-        // If enablejsapi=1 is present, use postMessage for instant, seamless playback without reloading the iframe
         if (src.includes('enablejsapi=1')) {
-            // Seek to exactly 0.01 seconds first, then play
             musicIframe.contentWindow.postMessage('{"event":"command","func":"seekTo","args":[0.01, true]}', '*');
             musicIframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
         } else {
-            // Fallback: reload the iframe with autoplay=1 SYNCHRONOUSLY
             if (!src.includes('youtube.com/embed') && !src.includes('youtube-nocookie.com/embed')) {
                 const ytMatch = src.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
                 if (ytMatch && ytMatch[1]) {
@@ -29,86 +31,132 @@ function openInvitation() {
         }
     }
 
-    // Temporarily pause the animation and add a click effect
-    btn.style.animation = 'none';
-    btn.style.transform = 'scale(0.9)';
-    
-    setTimeout(() => {
-        btn.style.transform = 'scale(1)';
-        
-        // Trigger the transition to show inner section
-        container.classList.add('opened');
-        
-        // Completely unlock native browser root scrolling so AOS reads manual smartphone touch events flawlessly
-        document.body.style.overflow = 'visible';
 
-        // Extremely critical: AOS initialized while the container was display:none, so it set all Y-coordinates to 0.
-        // We must force a hard refresh now that the layout exists so it resets animations to their true bottom coordinates!
-        setTimeout(() => {
-            AOS.refresh();
-        }, 100);
+    // GSAP Timeline for opening exactly replacing the CSS behavior
+    const tl = gsap.timeline({
+        onStart: () => {
+            document.body.style.overflow = 'visible';
+            // Need to remove display:none on invitation-section early so GSAP can calculate it
+            const invSection = document.querySelector('.invitation-section');
+            invSection.style.display = 'block';
+            invSection.style.opacity = '1'; // Make it visible IMMEDIATELY so entrance animations can be seen!
+        },
+        onComplete: () => {
+            container.classList.add('opened');
+            setTimeout(() => { ScrollTrigger.refresh(); }, 100);
 
-        // Start an elegant auto-scroll shortly after the initial cover fade-in
-        setTimeout(() => {
-            let isAutoScrolling = true;
-            let currentY = window.scrollY;
-
-            // Immediately stop auto-scrolling if the guest touches the screen or scrolls manually
-            const stopScroll = () => { isAutoScrolling = false; };
-            window.addEventListener('touchstart', stopScroll, { once: true, passive: true });
-            window.addEventListener('wheel', stopScroll, { once: true, passive: true });
-            window.addEventListener('mousedown', stopScroll, { once: true, passive: true });
-
-            let lastTime = null;
-            function scrollStep(timestamp) {
-                if (!isAutoScrolling) return;
-
-                if (!lastTime) lastTime = timestamp;
-                const deltaTime = timestamp - lastTime;
-                lastTime = timestamp;
-
-                // Real-world speed: 25 pixels per literal second exactly.
-                currentY += (25 * deltaTime) / 1000; 
-                window.scrollTo(0, currentY);
-
-                // Continue recursively until hit absolute bottom of native body
-                if (currentY < document.body.scrollHeight - window.innerHeight) {
-                    requestAnimationFrame(scrollStep);
-                }
-            }
+            // Start continuous GSAP inner flower sway natively!
+            gsap.to('.inner-flower', {
+                rotation: 3,
+                duration: 4,
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut",
+                stagger: 0.2
+            });
             
-            requestAnimationFrame(scrollStep);
-        }, 500);
+            // Auto-scroll logic
+            setTimeout(() => {
+                let isAutoScrolling = true;
+                let currentY = window.scrollY;
 
-    }, 200);
+                const stopScroll = () => { isAutoScrolling = false; };
+                window.addEventListener('touchstart', stopScroll, { once: true, passive: true });
+                window.addEventListener('wheel', stopScroll, { once: true, passive: true });
+                window.addEventListener('mousedown', stopScroll, { once: true, passive: true });
+
+                let lastTime = null;
+                function scrollStep(timestamp) {
+                    if (!isAutoScrolling) return;
+                    if (!lastTime) lastTime = timestamp;
+                    const deltaTime = timestamp - lastTime;
+                    lastTime = timestamp;
+
+                    currentY += (25 * deltaTime) / 1000; 
+                    window.scrollTo(0, currentY);
+
+                    if (currentY < document.body.scrollHeight - window.innerHeight) {
+                        requestAnimationFrame(scrollStep);
+                    }
+                }
+                requestAnimationFrame(scrollStep);
+            }, 500);
+        }
+    });
+
+    // 1. Button press effect (snappy press and pop)
+    tl.to(btn, { scale: 0.9, duration: 0.1, ease: "power1.out" })
+        .to(btn, { scale: 1, duration: 0.2, ease: "back.out(2)" })
+      // 2. Cover Section morphs away overlapping the pop-back effect!
+        .to('.cover-section', { scale: 1.05, autoAlpha: 0, duration: 0.8, ease: "power2.inOut" }, "<0.1")
+      // 3. Inner Flowers smoothly slide in from the outer edge to their origin
+        .fromTo('.inner-flower', 
+            { 
+                x: (i, target) => target.classList.contains('flower-5') ? 0 : -150, 
+                y: (i, target) => target.classList.contains('flower-5') ? 150 : 0, 
+                opacity: 0 
+            },
+            { x: 0, y: 0, opacity: 1, duration: 1.8, ease: "power2.out" }, 
+            "-=0.5"
+        )
+      // 4. Invitation Content gently lifts into place
+        .fromTo('.invitation-content', 
+            { y: 30, opacity: 0 },
+            { y: 0, opacity: 1, duration: 1, ease: "power2.out" },
+            "-=0.9"
+        );
 }
 
-function openPopup(popupId) {
-    if (window.event) window.event.preventDefault(); // Stop the 'href=#' from shooting the page back to the top
-    const container = document.querySelector('.card-container');
+// Global Timeline for Modals
+let popupTl = null;
+
+function initPopupTimeline() {
+    if (popupTl) return; // Only initialize once
     
-    // Hide all popup contents first
+    // Explicitly zero out absolute pixel translations and safely animate using pure Percentages
+    gsap.set('.popup-overlay', { autoAlpha: 0 });
+    gsap.set('.popup-container', { x: 0, y: 0, xPercent: -50, yPercent: 100 });
+    
+    // Create explicitly paused timeline
+    popupTl = gsap.timeline({ paused: true })
+        .to('.popup-overlay', { autoAlpha: 1, duration: 0.3, pointerEvents: 'all' }, 0)
+        .to('.popup-container', { yPercent: 0, duration: 0.4, ease: "power3.out" }, 0);
+}
+
+function openPopup(event, popupId) {
+    if (event) event.preventDefault();
+    if (!popupTl) initPopupTimeline();
+    
+    // Hide all popup contents directly
     document.querySelectorAll('.popup-content').forEach(el => {
+        el.style.display = 'none';
         el.classList.remove('active');
     });
     
-    // Show requested content
+    // Show requested content block
     const target = document.getElementById('popup-' + popupId);
     if(target) {
+        target.style.display = 'flex';
         target.classList.add('active');
-        container.classList.add('popup-active');
+        
+        // Play GSAP slide-up animation
+        popupTl.play();
     }
 }
 
-function closePopup() {
-    if (window.event) window.event.preventDefault();
-    const container = document.querySelector('.card-container');
-    container.classList.remove('popup-active');
+function closePopup(event) {
+    if (event) event.preventDefault();
+    if (popupTl) {
+        // Reverse GSAP animation perfectly back to hidden state
+        popupTl.reverse();
+        // Since timelines are extremely fast, we don't strictly need to reset display:none on children,
+        // but it's good practice to ensure cleanliness
+    }
 }
 
 // iOS Safari / Multi-Platform native Apple Calendar ICS file generator
-function downloadICS() {
-    if (window.event) window.event.preventDefault();
+function downloadICS(event) {
+    if (event) event.preventDefault();
     const icsContent = 
 `BEGIN:VCALENDAR
 VERSION:2.0
@@ -163,32 +211,62 @@ function updateCountdown() {
 setInterval(updateCountdown, 1000);
 updateCountdown();
 
-// AOS Animation Library Initialization
+// Animation Initialization
 document.addEventListener("DOMContentLoaded", () => {
     
-    // Initialize standard AOS
-    AOS.init({
-        duration: 1000,
-        once: false, // Set to false so animations replay when scrolling down and up
-        mirror: false, // Turned off to prevent the Section 4 overscroll bug at the bottom of the page
-        offset: 50,
-        easing: 'ease'
+    // 1. Initialize GSAP bounce on the Open Button
+    bounceTween = gsap.to('.open-btn', {
+        y: -12,
+        duration: 0.8,
+        repeat: -1,
+        yoyo: true,
+        ease: "power1.inOut"
     });
 
-    // Keep custom parallax floating logic strictly for the hero section since AOS is entrance-heavy
-    const heroObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.intersectionRatio < 0.6) {
-                entry.target.classList.add('fade-up-out');
-            } else {
-                entry.target.classList.remove('fade-up-out');
-            }
+    // 2. Infinitely sway background scroll flowers relatively from their resting CSS rotation
+    gsap.to('.scroll-flower', {
+        rotation: "+=4", 
+        duration: 4.5,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+        stagger: 0.5
+    });
+
+    // Register GSAP ScrollTrigger
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Scroll animations using GSAP ScrollTrigger
+    const scrollElements = gsap.utils.toArray('.countdown-wrapper, .glass-panel, .glass-panel > *, .aturcara-panel > *, .doa-section > *, .scroll-flower-wrapper');
+    
+    scrollElements.forEach(el => {
+        // Headers get a gentle zoom-in, normal content gets a slide-up
+        const isHeader = el.tagName.toLowerCase() === 'h2' || el.tagName.toLowerCase() === 'h3';
+        
+        gsap.from(el, {
+            scrollTrigger: {
+                trigger: el,
+                start: "top 85%", // Trigger when top of element hits 85% down viewport
+                toggleActions: "play none none reverse" // Replays seamlessly on scroll up and down
+            },
+            y: isHeader ? 0 : 50,
+            scale: isHeader ? 0.8 : 1,
+            opacity: 0,
+            duration: 1.2,
+            ease: "power2.out"
         });
-    }, { 
-        // We use default window root now because layout transitioned to native scrolling
-        threshold: [0, 0.6] 
     });
 
-    const heroSection = document.querySelector('.hero-section');
-    if (heroSection) heroObserver.observe(heroSection);
+    // Smooth GSAP scroll-driven fade out for the Hero section (replaces custom IntersectionObserver)
+    gsap.to('.hero-section', {
+        scrollTrigger: {
+            trigger: '.hero-section',
+            start: "top top",
+            end: "bottom 30%",
+            scrub: true // Ties the animation smoothly directly to the scrollbar
+        },
+        y: -80,
+        opacity: 0,
+        ease: "none"
+    });
 });

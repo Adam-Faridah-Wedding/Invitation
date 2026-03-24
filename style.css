@@ -24,7 +24,7 @@ body {
     min-height: 100dvh; /* Dynamic height for mobile browsers */
     position: relative;
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.08); /* Soft drop shadow */
-    overflow-x: clip; /* Modern fix: Uses clip instead of hidden so it doesn't accidentally trap the native scroll animation timeline! */
+    overflow-x: clip; 
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -64,13 +64,11 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    animation: bounce 2s infinite ease-in-out;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: box-shadow 0.2s ease; /* Removed 'transform' transition to prevent GSAP fighting */
 }
 
 .open-btn:hover {
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-    animation-play-state: paused;
 }
 
 .open-btn:active {
@@ -99,10 +97,6 @@ body {
     color: #000000;
 }
 
-/* Bouncing Animation */
- 
-
-/* --- Cover transition --- */
 .cover-section {
     position: absolute;
     width: 100%;
@@ -111,14 +105,12 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: opacity 1s ease, transform 1s ease;
+    /* Removed 'transition' because GSAP perfectly orchestrates opacity and transform in JS */
     z-index: 5;
 }
 
 .card-container.opened .cover-section {
-    opacity: 0;
     pointer-events: none;
-    transform: scale(1.05);
 }
 
 /* --- Inner Invitation Section --- */
@@ -135,7 +127,6 @@ body {
     display: block;
     opacity: 1;
     pointer-events: all;
-    animation: contentFade 1.5s ease forwards;
 }
 
 /* Hero Section */
@@ -148,14 +139,7 @@ body {
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
-    transition: opacity 0.8s ease, top 0.8s ease;
-    top: 0;
-}
-
-.hero-section.fade-up-out {
-    opacity: 0;
-    top: -80px; /* Smoothly rise up out of the way */
-    pointer-events: none;
+    /* GSAP perfectly scrubs opacity and positioning natively */
 }
 
 /* Inner Flowers */
@@ -164,7 +148,7 @@ body {
     left: 0;
     z-index: 1;
     pointer-events: none;
-    opacity: 0; /* Hidden before animation */
+    opacity: 0; 
     object-fit: contain;
 }
 
@@ -172,35 +156,21 @@ body {
 .flower-2 { top: 20%; left: -15%; width: 45%; }
 .flower-3 { top: 36%; left: -18%; width: 55%; }
 .flower-4 { bottom: 10%; left: -25%; width: 60%; }
-.flower-5 { bottom: -6%; left: -6%; width: 60%; rotate: 25deg; }
+.flower-5 { bottom: -10%; left: 20%; width: 60%; rotate: 25deg; }
 
-/* Animate flowers only when opened */
+/* GSAP handles entrance, we only need continuous sway */
 .card-container.opened .inner-flower {
-    animation: flowerEnter 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards, flowerSway 4s 1.5s infinite alternate ease-in-out;
+    opacity: 1; /* GSAP brings it to 1, this acts as final state */
 }
 
-/* Staggered delays and origin points for natural feel */
-.card-container.opened .flower-1 { animation-delay: 0.1s, 1.6s; transform-origin: left top; }
-.card-container.opened .flower-2 { animation-delay: 0.3s, 1.8s; transform-origin: left center; }
-.card-container.opened .flower-3 { animation-delay: 0.5s, 2.0s; transform-origin: left bottom; }
-.card-container.opened .flower-4 { animation-delay: 0.7s, 2.2s; transform-origin: center bottom; }
-.card-container.opened .flower-5 { animation-delay: 0.9s, 2.4s; transform-origin: center bottom; }
+/* Transform origins for natural sway feel */
+.flower-1 { transform-origin: left top; }
+.flower-2 { transform-origin: left center; }
+.flower-3 { transform-origin: left bottom; }
+.flower-4 { transform-origin: center bottom; }
+.flower-5 { transform-origin: center bottom; rotate: 25deg; }
 
-@keyframes flowerEnter {
-    from {
-        opacity: 0;
-        transform: translatey(50px) scale(0.55);
-    }
-    to {
-        opacity: 1;
-        transform: translatey(0) scale(1);
-    }
-}
 
-@keyframes flowerSway {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(3deg); }
-}
 
 /* Invitation Typography */
 .invitation-content {
@@ -215,13 +185,11 @@ body {
 }
 
 .card-container.opened .invitation-content {
-    animation: contentFade 1.5s ease 0.5s backwards;
+    /* Entrance is handled by GSAP, keeping opacity for normal state */
+    opacity: 1;
 }
 
-@keyframes contentFade {
-    from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+
 
 .subtitle {
     font-size: 11px;
@@ -320,16 +288,16 @@ body {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.4);
     z-index: 30;
+    visibility: hidden; /* GSAP autoAlpha handles this automatically */
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.4s ease;
 }
 
 .popup-container {
     position: fixed;
-    bottom: -100%; /* Start off-screen */
+    bottom: 0; /* Anchor at bottom */
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, 100%); /* Start completely off-screen at bottom */
     width: 100%;
     max-width: 450px;
     max-height: 80vh;
@@ -341,19 +309,10 @@ body {
     padding: 40px 20px 20px 20px;
     display: flex;
     flex-direction: column;
-    transition: bottom 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
     overflow-y: auto;
 }
 
-/* Active Popup States */
-.card-container.popup-active .popup-overlay {
-    opacity: 1;
-    pointer-events: all;
-}
-
-.card-container.popup-active .popup-container {
-    bottom: 0;
-}
+/* GSAP dynamically changes translation and autoAlpha, these overrides are removed */
 
 .close-btn {
     position: absolute;
@@ -380,16 +339,10 @@ body {
     align-items: center;
     text-align: center;
     width: 100%;
-    animation: fadeInContent 0.4s ease forwards;
 }
 
 .popup-content.active {
     display: flex;
-}
-
-@keyframes fadeInContent {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
 }
 
 .popup-header {
@@ -524,24 +477,19 @@ body {
 }
 
 .s-flower-1 { top: 0%; right: -10%; width: 50%; }
-.s-flower-1-img { --rotation:10deg; transform: rotate(var(--rotation)); animation: sFlowerSway 4s infinite alternate ease-in-out; transform-origin: right top; }
+.s-flower-1-img { --rotation:10deg; transform: rotate(var(--rotation)); transform-origin: right top; }
 
 .s-flower-2 { top: 5%; right: -20%; width: 60%; }
-.s-flower-2-img { --rotation: -15deg; transform: rotate(var(--rotation)); animation: sFlowerSway 4.5s infinite alternate ease-in-out; transform-origin: right top; }
+.s-flower-2-img { --rotation: -15deg; transform: rotate(var(--rotation)); transform-origin: right top; }
 
 .s-flower-3 { top: 45%; right: -25%; width: 50%; }
-.s-flower-3-img { --rotation: -5deg; transform: rotate(var(--rotation)); animation: sFlowerSway 5s infinite alternate ease-in-out; transform-origin: right center; }
+.s-flower-3-img { --rotation: -5deg; transform: rotate(var(--rotation)); transform-origin: right center; }
 
 .s-flower-4 { bottom: -5%; left: -20%; width: 50%; }
-.s-flower-4-img { --rotation: 25deg; transform: rotate(var(--rotation)); animation: sFlowerSway 4s infinite alternate ease-in-out; transform-origin: center bottom; }
+.s-flower-4-img { --rotation: 25deg; transform: rotate(var(--rotation)); transform-origin: center bottom; }
 
 .s-flower-5 { bottom: -10%; right: -20%; width: 60%; }
-.s-flower-5-img { --rotation: -2deg; transform: rotate(var(--rotation)); animation: sFlowerSway 4.5s infinite alternate ease-in-out; transform-origin: right bottom; }
-
-@keyframes sFlowerSway {
-    0% { transform: rotate(var(--rotation)); }
-    100% { transform: rotate(calc(var(--rotation) + 3deg)); }
-}
+.s-flower-5-img { --rotation: -2deg; transform: rotate(var(--rotation)); transform-origin: right bottom; }
 
 
 
