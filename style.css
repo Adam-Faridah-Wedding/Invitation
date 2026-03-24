@@ -711,4 +711,93 @@ body {
     padding: 0;
 }
 
+/* --- Wish Section --- */
+.wish-section {
+    position: relative;
+    width: 100%;
+    padding: 10px 0 80px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 2;
+}
+
+.wish-header {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.wish-board {
+    width: 85%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.wish-card {
+    padding: 25px 20px;
+    margin-bottom: 0;
+    width: 100%;
+}
+
+.wish-message {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    color: #444;
+    line-height: 1.6;
+    margin-bottom: 12px;
+    font-style: italic;
+    text-align: center;
+}
+
+.wish-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: #2c2c2c;
+    text-align: right;
+}
+.wish-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}
+
+.wish-input, .wish-textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.4);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    color: #333;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.wish-textarea {
+    resize: none;
+}
+
+.wish-input:focus, .wish-textarea:focus {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: rgba(0,0,0,0.3);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.wish-submit {
+    margin-top: 5px;
+    background: transparent;
+    cursor: pointer;
+    width: 100%;
+}
+
 

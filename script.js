@@ -54,6 +54,31 @@ function openInvitation() {
                 ease: "sine.inOut",
                 stagger: 0.2
             });
+
+            // Initialize Scatter Effect strictly AFTER entrance animation concludes
+            const heroFlowers = [
+                { selector: '.flower-1', x: -150, y: -150, rotation: -15 }, // Top flora
+                { selector: '.flower-2', x: -200, y: -50, rotation: -25 },  // Mid flora
+                { selector: '.flower-3', x: -250, y: 0, rotation: 15 },     // Lower flora
+                { selector: '.flower-4', x: -200, y: 100, rotation: -20 },  // Bottom flora
+                { selector: '.flower-5', x: 0, y: 250, rotation: 15 } // Corner flora: aggressively peels straight down the Y axis
+            ];
+        
+            heroFlowers.forEach(flower => {
+                gsap.to(flower.selector, {
+                    scrollTrigger: {
+                        trigger: '.hero-section',
+                        start: "top top",
+                        end: "bottom center",
+                        scrub: true
+                    },
+                    x: flower.x,
+                    y: flower.y,
+                    rotation: flower.rotation,
+                    opacity: 0,
+                    ease: "none"
+                });
+            });
             
             // Auto-scroll logic
             setTimeout(() => {
@@ -237,7 +262,7 @@ document.addEventListener("DOMContentLoaded", () => {
     gsap.registerPlugin(ScrollTrigger);
 
     // Scroll animations using GSAP ScrollTrigger
-    const scrollElements = gsap.utils.toArray('.countdown-wrapper, .glass-panel, .glass-panel > *, .aturcara-panel > *, .doa-section > *, .scroll-flower-wrapper');
+    const scrollElements = gsap.utils.toArray('.countdown-wrapper, .glass-panel, .glass-panel > *, .aturcara-panel > *, .doa-section > *, .wish-section > *, .scroll-flower-wrapper');
     
     scrollElements.forEach(el => {
         // Headers get a gentle zoom-in, normal content gets a slide-up
@@ -257,7 +282,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Smooth GSAP scroll-driven fade out for the Hero section (replaces custom IntersectionObserver)
+
     gsap.to('.hero-section', {
         scrollTrigger: {
             trigger: '.hero-section',
@@ -270,3 +295,41 @@ document.addEventListener("DOMContentLoaded", () => {
         ease: "none"
     });
 });
+
+// Submit RSVP form and inject wishes dynamically safely
+function submitRSVP(event) {
+    event.preventDefault();
+    const form = document.getElementById('rsvpForm');
+    const name = document.getElementById('rsvpName').value.trim();
+    const wish = document.getElementById('rsvpWish').value.trim();
+    
+    if (wish !== '') {
+        const wishBoard = document.getElementById('wishBoard');
+        const newWishHtml = `
+            <div class="glass-panel wish-card new-wish">
+                <p class="wish-message">"${wish}"</p>
+                <p class="wish-name">- ${name}</p>
+            </div>
+        `;
+        
+        wishBoard.insertAdjacentHTML('beforeend', newWishHtml);
+        
+        // Animate newly injected wish card natively
+        gsap.from('.new-wish', {
+            y: 30,
+            opacity: 0,
+            duration: 0.8,
+            ease: "power2.out"
+        });
+        
+        // Clean up the target class
+        document.querySelector('.new-wish').classList.remove('new-wish');
+        
+        // Gracefully mathematically refresh all scroll triggers for the expanded height
+        setTimeout(() => ScrollTrigger.refresh(), 100);
+    }
+    
+    alert('Thank you! Your RSVP and wishes have been submitted.');
+    closePopup();
+    form.reset();
+}

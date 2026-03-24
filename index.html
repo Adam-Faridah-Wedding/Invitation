@@ -122,6 +122,21 @@
                 <p class="doa-text">"Semoga Allah memberkati kamu, dan memberkati atasmu, serta mengumpulkan kamu berdua dalam kebaikan"</p>
             </div>
         </div>
+        
+        <!-- Wish Section -->
+        <div class="wish-section">
+            <h3 class="wish-header">Wishes</h3>
+            <div class="wish-board" id="wishBoard">
+                <div class="glass-panel wish-card">
+                    <p class="wish-message">"Selamat Pengantin Baru! Semoga kekal hingga ke Jannah."</p>
+                    <p class="wish-name">- Uncle Ali & Family</p>
+                </div>
+                <div class="glass-panel wish-card">
+                    <p class="wish-message">"Congratulations on your big day! Sorry we couldn't make it, sending our warmest regards."</p>
+                    <p class="wish-name">- Sarah</p>
+                </div>
+            </div>
+        </div>
 
     </div> <!-- Closes invitation-section -->
 
@@ -165,9 +180,28 @@
                 <p class="rsvp-text">We look forward to celebrating with you!</p>
                 <p class="rsvp-subtext">Please let us know if you'll be attending:</p>
                 <div class="rsvp-buttons">
-                    <button class="action-btn" onclick="alert('Thank you for attending!')">Hadir</button>
+                    <button class="action-btn" onclick="openPopup(event, 'rsvp-form')">Hadir</button>
                     <button class="action-btn outline" onclick="alert('We\'ll miss you!')">Tidak Hadir</button>
                 </div>
+            </div>
+
+            <!-- RSVP Form Content (Hadir) -->
+            <div class="popup-content" id="popup-rsvp-form">
+                <h2 class="popup-header">Details</h2>
+                <form class="wish-form" id="rsvpForm" onsubmit="submitRSVP(event)">
+                    <input type="text" class="wish-input" id="rsvpName" placeholder="Your Name" required>
+                    <select class="wish-input" required>
+                        <option value="" disabled selected>Number of Guests</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5+">5+</option>
+                    </select>
+                    <textarea class="wish-textarea" id="rsvpWish" placeholder="Wishes for the couple (Optional)" rows="3"></textarea>
+                    <button type="submit" class="action-btn">Confirm RSVP</button>
+                    <button type="button" class="action-btn outline" onclick="openPopup(event, 'rsvp')">Back</button>
+                </form>
             </div>
 
             <!-- Contact Content -->
@@ -261,6 +295,7 @@
             </div>
         </div>
     </div>
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
