@@ -81,7 +81,7 @@ function openInvitation() {
                     const deltaTime = timestamp - lastTime;
                     lastTime = timestamp;
 
-                    currentY += (25 * deltaTime) / 1000; 
+                    currentY += (65 * deltaTime) / 1000; 
                     window.scrollTo(0, currentY);
 
                     if (currentY < document.body.scrollHeight - window.innerHeight) {
