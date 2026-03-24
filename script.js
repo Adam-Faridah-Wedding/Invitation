@@ -262,7 +262,7 @@ document.addEventListener("DOMContentLoaded", () => {
     gsap.registerPlugin(ScrollTrigger);
 
     // Scroll animations using GSAP ScrollTrigger
-    const scrollElements = gsap.utils.toArray('.countdown-wrapper, .glass-panel, .glass-panel > *, .aturcara-panel > *, .doa-section > *, .wish-section > *, .scroll-flower-wrapper');
+    const scrollElements = gsap.utils.toArray('.countdown-wrapper, .glass-panel, .glass-panel > *, .aturcara-panel > *, .doa-section > *, .wish-section > *');
     
     scrollElements.forEach(el => {
         // Headers get a gentle zoom-in, normal content gets a slide-up
@@ -282,6 +282,32 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+
+    // Reveal Inwards Effect for Details Section Flowers
+    // Flowers start pushed outward (off-screen) and majestically assemble INWARDS to their resting CSS positions as you scroll!
+    const detailsFlowers = [
+        { selector: '.s-flower-1', x: 250, y: -200, rotation: 30 }, // Top Right flora starts far up-right
+        { selector: '.s-flower-2', x: 200, y: -100, rotation: 20 }, // Mid Right flora starts far right
+        { selector: '.s-flower-3', x: 250, y: 50, rotation: -15 },  // Lower Right flora starts far right
+        { selector: '.s-flower-4', x: -250, y: 150, rotation: -25 },// Bottom Left flora starts far down-left
+        { selector: '.s-flower-5', x: 200, y: 200, rotation: 35 }   // Bottom Right flora starts far down-right
+    ];
+
+    detailsFlowers.forEach(flower => {
+        gsap.from(flower.selector, {
+            scrollTrigger: {
+                trigger: '.details-section',
+                start: "top 90%", // Starts assembling right as the section enters the bottom of the screen
+                end: "center center", // Fully assembled gracefully at their real CSS positions when centered
+                scrub: true
+            },
+            x: flower.x,
+            y: flower.y,
+            rotation: flower.rotation,
+            opacity: 0,
+            ease: "none" // Crucial for smooth scrubbing
+        });
+    });
 
     gsap.to('.hero-section', {
         scrollTrigger: {
