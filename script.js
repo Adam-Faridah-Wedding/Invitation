@@ -406,7 +406,9 @@ function submitRSVP(event) {
     // Instantly update UI counters safely
     const elHadir = document.getElementById('countHadir');
     if (elHadir && !isNaN(parseInt(elHadir.innerText))) {
-        elHadir.innerText = parseInt(elHadir.innerText) + 1;
+        let guestCount = parseInt(guests);
+        if (isNaN(guestCount) || guestCount <= 0) guestCount = 1;
+        elHadir.innerText = parseInt(elHadir.innerText) + guestCount;
     }
 
     alert('Success! Your RSVP and wishes have been permanently recorded.');
@@ -560,7 +562,9 @@ function fetchWishes() {
                     } else if (row.Guest === "Hanya Ucapan" || row.Guest === "hanya ucapan" || String(row.Guest).includes("Hanya Ucapan")) {
                         // Crucial: Do not increment Hadir/Tidak counters for isolated wishes!
                     } else if (safeName && safeName.trim() !== '') {
-                        hadirTotal++; // Any valid name entry without 'Tidak Hadir' qualifies as one real submission
+                        let guestCount = parseInt(row.Guest);
+                        if (isNaN(guestCount) || guestCount <= 0) guestCount = 1;
+                        hadirTotal += guestCount; // Sum the exact amount of guests
                     }
 
                     // Only render people who actually wrote a wish string mathematically
