@@ -150,6 +150,7 @@ body {
     pointer-events: none;
     opacity: 0; 
     object-fit: contain;
+    will-change: transform, opacity; /* Force hardware acceleration */
 }
 
 .flower-1 { top: -7%; left: -15%; width: 55%; }
@@ -507,6 +508,7 @@ body {
     width: 100%;
     object-fit: contain;
     pointer-events: none;
+    will-change: transform; /* Force hardware acceleration for infinite loop */
 }
 
 .s-flower-1 { top: 0%; right: -10%; width: 50%; }
