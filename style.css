@@ -821,22 +821,31 @@ body {
     gap: 15px;
     max-height: 520px; /* Limits height to approximately 5 boxes */
     overflow-y: auto; /* Enables vertical scrolling when content exceeds the max-height */
-    padding-right: 10px; /* Accommodate scrollbar gracefully */
+    padding: 15px 10px 15px 0px; /* Added right padding so to accommodate scrollbar */
+    
+    /* Inner shadow for scroll illusion: stronger top, softer bottom */
+    box-shadow: inset 0px 15px 20px -15px rgba(0, 0, 0, 0.15),
+                inset 0px -15px 20px -15px rgba(0, 0, 0, 0.06);
+    border-radius: 12px;
+    
+    /* Elegant scrollbar for Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
 }
 
-/* Minimalist elegant scrollbar */
+/* Minimalist elegant scrollbar for Chrome, Safari, and Edge */
 .wish-board::-webkit-scrollbar {
-    width: 6px;
+    width: 4px;
 }
 .wish-board::-webkit-scrollbar-track {
     background: transparent;
 }
 .wish-board::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.15);
     border-radius: 10px;
 }
 .wish-board::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.3);
 }
 
 .wish-card {
