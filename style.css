@@ -913,8 +913,8 @@ body {
 /* --- Floating Audio Control --- */
 .audio-control {
     position: fixed;
-    bottom: 85px; /* Safely above the bottom navigation bar */
-    right: 20px;
+    bottom: 100px; /* Safely above the bottom navigation bar */
+    right: 30px;
     width: 45px;
     height: 45px;
     background: #ffffff;
