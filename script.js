@@ -374,8 +374,9 @@ function submitRSVP(event) {
     formData.append('name', guestName);
     formData.append('Nama', guestName);
     formData.append('Name ', guestName);
-    formData.append('Guest', guests);
-    formData.append('Wish', wish);
+    formData.append('#', guests);
+    formData.append('Guest', wish);
+    formData.append('Wish', wish); // Fallback
 
     // Start background sync seamlessly
     fetch(scriptURL, { method: 'POST', body: formData })
@@ -437,7 +438,8 @@ function submitRSVPTidak(event) {
     formData.append('name', guestName);
     formData.append('Nama', guestName);
     formData.append('Name ', guestName);
-    formData.append('Guest', "Tidak Hadir");
+    formData.append('#', "Tidak Hadir");
+    formData.append('Guest', wish);
     formData.append('Wish', wish);
 
     // Start background sync seamlessly
@@ -498,7 +500,8 @@ function submitWishOnly(event) {
     formData.append('name', guestName);
     formData.append('Nama', guestName);
     formData.append('Name ', guestName);
-    formData.append('Guest', "Hanya Ucapan"); // Explicitly safeguarding Google Sheet tracking logic
+    formData.append('#', "Hanya Ucapan"); // Explicitly safeguarding Google Sheet tracking logic
+    formData.append('Guest', wishMessage);
     formData.append('Wish', wishMessage);
 
     // Start background sync seamlessly
@@ -556,22 +559,26 @@ function fetchWishes() {
                     // Extract safe name variable identically to UI fallback
                     const safeName = row.Name || row.name || row['Name '] || row.Nama;
                     
+                    // Support both old headers and new headers ('#' and 'Guest')
+                    const rsvpStatus = row['#'] !== undefined ? row['#'] : row.Guest;
+                    const wishMsg = row['#'] !== undefined ? row.Guest : row.Wish;
+
                     // Categorize RSVPs intelligently
-                    if (row.Guest === "Tidak Hadir" || row.Guest === "tidak hadir" || row.Guests === "Tidak Hadir") {
+                    if (rsvpStatus === "Tidak Hadir" || rsvpStatus === "tidak hadir" || row.Guests === "Tidak Hadir") {
                         tidakHadirTotal++;
-                    } else if (row.Guest === "Hanya Ucapan" || row.Guest === "hanya ucapan" || String(row.Guest).includes("Hanya Ucapan")) {
+                    } else if (rsvpStatus === "Hanya Ucapan" || rsvpStatus === "hanya ucapan" || String(rsvpStatus).includes("Hanya Ucapan")) {
                         // Crucial: Do not increment Hadir/Tidak counters for isolated wishes!
                     } else if (safeName && safeName.trim() !== '') {
-                        let guestCount = parseInt(row.Guest);
+                        let guestCount = parseInt(rsvpStatus);
                         if (isNaN(guestCount) || guestCount <= 0) guestCount = 1;
                         hadirTotal += guestCount; // Sum the exact amount of guests
                     }
 
                     // Only render people who actually wrote a wish string mathematically
-                    if (row.Wish && row.Wish.trim() !== '') {
+                    if (wishMsg && wishMsg.trim() !== '') {
                         const wishHtml = `
                             <div class="glass-panel wish-card">
-                                <p class="wish-message">"${row.Wish}"</p>
+                                <p class="wish-message">"${wishMsg}"</p>
                                 <p class="wish-name">- ${safeName || 'Guest'}</p>
                             </div>
                         `;
