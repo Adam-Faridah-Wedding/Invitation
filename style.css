@@ -230,21 +230,23 @@ body {
 /* Bottom Navigation */
 .bottom-nav {
     position: fixed;
-    bottom: 0;
+    bottom: 25px; /* Float above the bottom */
+    bottom: calc(25px + env(safe-area-inset-bottom)); /* Safe area for iOS */
     left: 50%;
     transform: translateX(-50%);
-    width: 100%;
-    max-width: 450px;
-    height: 70px;
-    height: calc(70px + env(safe-area-inset-bottom)); /* Accounts for iOS home bar */
-    padding-bottom: env(safe-area-inset-bottom);
-    background: rgba(255, 255, 255, 0.007);
-    backdrop-filter: blur(10px);
+    width: 90%; /* Float effect with margins */
+    max-width: 400px;
+    height: 65px;
+    background: rgba(255, 255, 255, 0.7); /* Slightly translucent glass effect */
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
     display: flex;
     justify-content: space-around;
     align-items: center;
     z-index: 20;
-    border-top: 1px solid rgba(0,0,0,0.04);
+    border: 1px solid rgba(255, 255, 255, 0.8); /* Refined glass border completely around */
+    border-radius: 40px; /* Fully rounded "pill" shape */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12); /* Soft floating drop shadow */
     pointer-events: none;
     opacity: 0;
     transition: opacity 1s ease;
